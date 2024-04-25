@@ -148,6 +148,12 @@
                         <span>剑三铭牌</span>
                     </router-link>
                 </el-col>
+                <el-col :span="4">
+                    <router-link to="/community">
+                        <i class="el-icon-postcard"></i>
+                        <span>魔盒论坛</span>
+                    </router-link>
+                </el-col>
             </el-row>
 
             <template v-if="isAdmin">

@@ -23,6 +23,7 @@ const bps = () => import("../post/bps.vue");
 const skill = () => import("../post/skill.vue");
 const tool = () => import("../post/tool.vue");
 const bbs = () => import("../post/bbs.vue");
+const community = () => import("../post/community.vue");
 // const house = () => import("../post/house.vue");
 const share = () => import("../post/share.vue");
 const notice = () => import("../post/notice.vue");
@@ -62,6 +63,8 @@ const bucket_calendar = () => import("../bucket/calendar.vue");
 const bucket_face = () => import("../bucket/face.vue");
 const bucket_body = () => import("../bucket/body.vue");
 
+const cmsCommunity = () => import("../views/cms_community.vue");
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -74,6 +77,10 @@ const routes = [
     // CMS
     // ================================
     // 查看
+    {
+        path: "/cms/community",
+        component: cmsCommunity,
+    },
     {
         path: "/cms/:type",
         component: cms,
@@ -141,6 +148,13 @@ const routes = [
         path: "/post/:id?",
         component: bbs,
     },
+    // 魔盒论坛
+
+    {
+        path: "/community/:id?",
+        component: community,
+        name: "community",
+    },
     // 公告
     {
         path: "/notice/:id?",
@@ -198,7 +212,7 @@ const routes = [
     {
         path: "/body/:id?",
         component: body,
-    }, 
+    },
     {
         path: "/bucket/body",
         component: bucket_body,
@@ -229,12 +243,12 @@ const routes = [
     // 铭牌
     {
         path: "/namespace/:id?",
-        component: namespace, 
+        component: namespace,
     },
     {
         path: "/bucket/namespace",
         component: bucket_namespace,
-        name:'bucket_namespace'
+        name: "bucket_namespace",
     },
     // 小册
     {

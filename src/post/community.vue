@@ -1,0 +1,235 @@
+<template>
+    <div class="m-publish-box" v-loading="loading">
+        <!-- 头部 -->
+        <publish-header name="魔盒论坛">
+            <publish-revision :enable="true" :post-id="id"></publish-revision>
+        </publish-header>
+
+        <el-form label-position="left" label-width="80px">
+            <!-- 标题 -->
+            <publish-title v-model="post.title"></publish-title>
+
+            <!-- 信息 -->
+            <div class="m-publish-info">
+                <el-divider content-position="left">信息</el-divider>
+
+                <!-- 类型 -->
+                <publish-subtype v-model="post.category" :options="community_types"></publish-subtype>
+
+                <!-- 主题 -->
+                <publish-tags v-model="post.sub_category" :options="sub_category" label="主题"></publish-tags>
+
+                <!-- 标签 -->
+                <!-- <publish-topic-bucket v-model="post.buckets"></publish-topic-bucket> -->
+            </div>
+
+            <!-- 正文 -->
+            <div class="m-publish-content">
+                <el-divider content-position="left">正文</el-divider>
+                <!-- <el-radio-group class="m-publish-editormode" size="small" v-model="post.post_mode">
+                    <el-radio-button label="tinymce">可视化编辑器</el-radio-button>
+                    <el-radio-button label="markdown">Markdown</el-radio-button>
+                </el-radio-group> -->
+                <!-- <Markdown
+                    v-model="post.content"
+                    :editable="true"
+                    :readOnly="false"
+                    :attachmentEnable="false"
+                    :resourceEnable="false"
+                    v-show="post.post_mode == 'markdown'"
+                ></Markdown> -->
+                <Tinymce
+                    v-model="post.content"
+                    :attachmentEnable="false"
+                    :resourceEnable="false"
+                    v-show="!post.post_mode || post.post_mode == 'tinymce'"
+                />
+            </div>
+
+            <!-- 附加 -->
+
+            <div class="m-publish-append">
+                <el-divider content-position="left">小册</el-divider>
+                <publish-collection v-model="post.collection_id" :defaultCollapse="post.collection_collapse">
+                </publish-collection>
+            </div>
+
+            <!-- 其它 -->
+            <div class="m-publish-other">
+                <publish-banner v-model="post.banner_img"></publish-banner>
+            </div>
+
+            <div class="m-publish-doc">
+                <el-checkbox v-model="hasRead" :true-label="1" :false-label="0"
+                    >我已阅读并了解<a href="/notice/119" @click.stop target="_blank">《创作发布规范》</a></el-checkbox
+                >
+            </div>
+
+            <!-- 按钮 -->
+            <div class="m-publish-buttons">
+                <template>
+                    <el-button type="primary" @click="publish('publish', true)" :disabled="processing || !hasRead"
+                        >发 &nbsp;&nbsp; 布</el-button
+                    >
+                    <!-- <el-button type="plain" @click="publish('draft', false)" :disabled="processing || !hasRead"
+                        >保存为草稿</el-button
+                    > -->
+                </template>
+            </div>
+        </el-form>
+    </div>
+</template>
+
+<script>
+// 公共模块
+import { getLink } from "@jx3box/jx3box-common/js/utils";
+import community_types from "@/assets/data/community.json";
+
+import User from "@jx3box/jx3box-common/js/user.js";
+
+import { push, pull } from "@/service/community.js";
+
+// 本地模块
+import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";
+// import Markdown from "@jx3box/jx3box-editor/src/Markdown";
+import publish_header from "@/components/publish_header.vue";
+import publish_title from "@/components/publish_title.vue";
+import publish_collection from "@/components/publish_collection";
+
+import publish_banner from "@/components/publish_banner";
+import publish_subtype from "@/components/publish_subtype";
+import publish_revision from "@/components/publish_revision.vue";
+import publish_tags from "@/components/publish_tags";
+
+// 数据逻辑
+import { getTopicBucket } from "@/service/cms.js";
+import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
+import { atAuthorMixin } from "@/utils/atAuthorMixin";
+
+export default {
+    name: "bbs",
+    mixins: [cmsMetaMixin, atAuthorMixin],
+    components: {
+        Tinymce,
+        // Markdown,
+        "publish-header": publish_header,
+        "publish-title": publish_title,
+        "publish-collection": publish_collection,
+        "publish-banner": publish_banner,
+        "publish-subtype": publish_subtype,
+        "publish-revision": publish_revision,
+        "publish-tags": publish_tags,
+    },
+    data: function () {
+        return {
+            // 加载状态
+            loading: false,
+            // 发布状态
+            processing: false,
+
+            // 内容
+            post: {
+                // 文章ID
+                id: "",
+                // 状态：publish公开、private私有、draft草稿、dustbin删除
+                // post_status: "publish",
+                // 分类 文章/讨论
+                category: "讨论",
+                // 标题
+                title: "",
+                // 自定义字段
+                post_meta: {},
+                // 内容
+                content: "",
+                // 编辑模式(会影响文章详情页渲染规则)
+                post_mode: "tinymce",
+
+                // 语言：cn简体、tr繁体
+                lang: "cn",
+
+                // 主题
+                sub_category: [],
+
+                // 海报
+                banner_img: "",
+                // 小册id
+                collection_id: "",
+            },
+
+            // 选项
+            community_types,
+            sub_category: [],
+            buckets: [],
+        };
+    },
+    computed: {
+        id: function () {
+            return ~~this.post.id;
+        },
+        data: function () {
+            return {
+                ...this.post,
+                collection_id: this.post.collection_id || undefined,
+                sub_category: this.post.sub_category.join(),
+            };
+        },
+        isSuperAuthor() {
+            return User.isSuperAuthor();
+        },
+    },
+    mounted() {
+        this.getTopicBucket();
+        const id = this.$route.params.id;
+        if (id) {
+            this.post.id = id;
+            this.loadCommentConfig("community", id);
+        }
+    },
+    methods: {
+        // 初始化
+        init: function () {
+            // 尝试加载
+            sessionStorage.removeItem("atAuthor");
+            // return this.loadData().then(() => {
+            //     this.autoSave();
+            // });
+            const id = this.$route.params.id;
+            if (!id) return;
+            pull(id).then((res) => {
+                const data = res.data.data;
+                this.post = {
+                    ...this.post,
+                    title: data.title,
+                    content: data.content,
+                    collection_id: data.collection_id,
+                    banner_img: data.banner_img,
+                    sub_category: data.sub_category.split(","),
+                };
+                // this.post.category();
+            });
+        },
+        // 发布
+        publish: function () {
+            push(this.data).then((res) => {
+                this.$message({
+                    message: "发布成功",
+                    type: "success",
+                });
+                // 跳转
+                setTimeout(() => {
+                    location.href = `/community/${res.data.data.id}`;
+                }, 500);
+            });
+
+            // t
+        },
+
+        getTopicBucket() {
+            getTopicBucket({ type: "bbs" }).then((res) => {
+                const data = res.data.data?.map((item) => item.name) || [];
+                this.sub_category = [...data];
+            });
+        },
+    },
+};
+</script>
