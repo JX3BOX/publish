@@ -119,6 +119,12 @@
             <el-divider content-position="left">PVBB</el-divider>
             <el-row :gutter="20">
                 <el-col :span="4">
+                    <router-link to="/community">
+                        <i class="el-icon-postcard"></i>
+                        <span>魔盒论坛</span>
+                    </router-link>
+                </el-col>
+                <el-col :span="4">
                     <router-link to="/bbs">
                         <img svg-inline src="../assets/img/channel/post.svg" />
                         <span>剑三茶馆</span>
@@ -146,12 +152,6 @@
                     <router-link to="/namespace">
                         <i class="el-icon-postcard"></i>
                         <span>剑三铭牌</span>
-                    </router-link>
-                </el-col>
-                <el-col :span="4">
-                    <router-link to="/community">
-                        <i class="el-icon-postcard"></i>
-                        <span>魔盒论坛</span>
                     </router-link>
                 </el-col>
             </el-row>

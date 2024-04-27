@@ -16,32 +16,20 @@
                 <!-- 类型 -->
                 <publish-subtype v-model="post.category" :options="community_types"></publish-subtype>
 
-                <!-- 主题 -->
-                <publish-tags v-model="post.sub_category" :options="sub_category" label="主题"></publish-tags>
-
-                <!-- 标签 -->
-                <!-- <publish-topic-bucket v-model="post.buckets"></publish-topic-bucket> -->
+                <el-form-item label="标签">
+                    <el-radio-group v-model="post.sub_category">
+                        <el-radio v-for="item in tags" :key="item" :label="item">{{ item }}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
             </div>
 
             <!-- 正文 -->
             <div class="m-publish-content">
                 <el-divider content-position="left">正文</el-divider>
-                <!-- <el-radio-group class="m-publish-editormode" size="small" v-model="post.post_mode">
-                    <el-radio-button label="tinymce">可视化编辑器</el-radio-button>
-                    <el-radio-button label="markdown">Markdown</el-radio-button>
-                </el-radio-group> -->
-                <!-- <Markdown
-                    v-model="post.content"
-                    :editable="true"
-                    :readOnly="false"
-                    :attachmentEnable="false"
-                    :resourceEnable="false"
-                    v-show="post.post_mode == 'markdown'"
-                ></Markdown> -->
                 <Tinymce
                     v-model="post.content"
-                    :attachmentEnable="false"
-                    :resourceEnable="false"
+                    :attachmentEnable="true"
+                    :resourceEnable="true"
                     v-show="!post.post_mode || post.post_mode == 'tinymce'"
                 />
             </div>
@@ -82,7 +70,6 @@
 
 <script>
 // 公共模块
-import { getLink } from "@jx3box/jx3box-common/js/utils";
 import community_types from "@/assets/data/community.json";
 
 import User from "@jx3box/jx3box-common/js/user.js";
@@ -91,15 +78,14 @@ import { push, pull } from "@/service/community.js";
 
 // 本地模块
 import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";
-// import Markdown from "@jx3box/jx3box-editor/src/Markdown";
+
 import publish_header from "@/components/publish_header.vue";
 import publish_title from "@/components/publish_title.vue";
 import publish_collection from "@/components/publish_collection";
 
 import publish_banner from "@/components/publish_banner";
-import publish_subtype from "@/components/publish_subtype";
 import publish_revision from "@/components/publish_revision.vue";
-import publish_tags from "@/components/publish_tags";
+import publish_subtype from "@/components/publish_subtype";
 
 // 数据逻辑
 import { getTopicBucket } from "@/service/cms.js";
@@ -111,14 +97,12 @@ export default {
     mixins: [cmsMetaMixin, atAuthorMixin],
     components: {
         Tinymce,
-        // Markdown,
         "publish-header": publish_header,
         "publish-title": publish_title,
         "publish-collection": publish_collection,
         "publish-banner": publish_banner,
-        "publish-subtype": publish_subtype,
         "publish-revision": publish_revision,
-        "publish-tags": publish_tags,
+        "publish-subtype": publish_subtype,
     },
     data: function () {
         return {
@@ -133,8 +117,10 @@ export default {
                 id: "",
                 // 状态：publish公开、private私有、draft草稿、dustbin删除
                 // post_status: "publish",
-                // 分类 文章/讨论
+                // 分类
                 category: "讨论",
+                // 子分类
+                sub_category: "",
                 // 标题
                 title: "",
                 // 自定义字段
@@ -147,9 +133,6 @@ export default {
                 // 语言：cn简体、tr繁体
                 lang: "cn",
 
-                // 主题
-                sub_category: [],
-
                 // 海报
                 banner_img: "",
                 // 小册id
@@ -158,19 +141,21 @@ export default {
 
             // 选项
             community_types,
-            sub_category: [],
+            tags: [],
             buckets: [],
         };
     },
+
     computed: {
         id: function () {
             return ~~this.post.id;
         },
         data: function () {
+            const imgs = this.getImgSrc(this.post.content);
             return {
                 ...this.post,
                 collection_id: this.post.collection_id || undefined,
-                sub_category: this.post.sub_category.join(),
+                extra_images: imgs,
             };
         },
         isSuperAuthor() {
@@ -203,9 +188,7 @@ export default {
                     content: data.content,
                     collection_id: data.collection_id,
                     banner_img: data.banner_img,
-                    sub_category: data.sub_category.split(","),
                 };
-                // this.post.category();
             });
         },
         // 发布
@@ -223,11 +206,28 @@ export default {
 
             // t
         },
+        getImgSrc: function (htmlString) {
+            // 创建一个正则表达式来匹配<img>标签，并且捕获src属性的值
+            const imgSrcRegex = /<img\s+[^>]*src="([^"]*)"/g;
+            let matches;
+            const imgSrcs = [];
+
+            // 使用正则表达式全局匹配HTML字符串中的所有<img>标签
+            while ((matches = imgSrcRegex.exec(htmlString)) !== null) {
+                // matches[1] 是正则表达式中捕获组的内容，即src的值
+                imgSrcs.push(matches[1]);
+            }
+
+            return imgSrcs;
+        },
 
         getTopicBucket() {
-            getTopicBucket({ type: "bbs" }).then((res) => {
+            getTopicBucket({ type: "community" }).then((res) => {
                 const data = res.data.data?.map((item) => item.name) || [];
-                this.sub_category = [...data];
+                if (data[0]) {
+                    this.post.sub_category = data[0];
+                }
+                this.tags = [...data];
             });
         },
     },
