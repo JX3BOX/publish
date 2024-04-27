@@ -74,7 +74,7 @@ import community_types from "@/assets/data/community.json";
 
 import User from "@jx3box/jx3box-common/js/user.js";
 
-import { push, pull } from "@/service/community.js";
+import { push, pull, update } from "@/service/community.js";
 
 // 本地模块
 import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";
@@ -193,16 +193,29 @@ export default {
         },
         // 发布
         publish: function () {
-            push(this.data).then((res) => {
-                this.$message({
-                    message: "发布成功",
-                    type: "success",
+            if (this.data.id) {
+                update(this.data.id, this.data).then((res) => {
+                    this.$message({
+                        message: "更新成功",
+                        type: "success",
+                    });
+                    // 跳转
+                    setTimeout(() => {
+                        location.href = `/community/${res.data.data.id}`;
+                    }, 500);
                 });
-                // 跳转
-                setTimeout(() => {
-                    location.href = `/community/${res.data.data.id}`;
-                }, 500);
-            });
+            } else {
+                push(this.data).then((res) => {
+                    this.$message({
+                        message: "发布成功",
+                        type: "success",
+                    });
+                    // 跳转
+                    setTimeout(() => {
+                        location.href = `/community/${res.data.data.id}`;
+                    }, 500);
+                });
+            }
 
             // t
         },

@@ -4,11 +4,7 @@
             <h2 class="u-title">通用评论</h2>
         </div>
 
-        <el-input
-            class="m-dashboard-work-search u-source-search"
-            placeholder="请输入搜索内容"
-            v-model="search"
-        >
+        <el-input class="m-dashboard-work-search u-source-search" placeholder="请输入搜索内容" v-model="search">
             <template slot="prepend">关键词</template>
             <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
@@ -24,11 +20,9 @@
                         />
                         <img v-else svg-inline src="../assets/img/works/draft.svg" /> -->
                     </i>
-                    <a
-                        class="u-title"
-                        target="_blank"
-                        :href="postLink(item.category, item.postID)"
-                    >{{item.content || '未知'}}</a>
+                    <a class="u-title" target="_blank" :href="postLink(item.category, item.postID)">{{
+                        item.content || "未知"
+                    }}</a>
                     <!-- <span class="u-desc">{{item.content || '未知'}}</span> -->
                     <div class="u-desc">
                         <time class="u-desc-subitem">
@@ -40,7 +34,7 @@
 
                     <el-button-group class="u-action">
                         <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
-                            <el-button size="mini" icon="el-icon-delete" @click="del(item.id,i)"></el-button>
+                            <el-button size="mini" icon="el-icon-delete" @click="del(item.id, i)"></el-button>
                         </el-tooltip>
                     </el-button-group>
                 </li>
