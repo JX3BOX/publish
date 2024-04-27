@@ -30,7 +30,6 @@
                     v-model="post.content"
                     :attachmentEnable="true"
                     :resourceEnable="true"
-                    v-show="!post.post_mode || post.post_mode == 'tinymce'"
                 />
             </div>
 
@@ -42,10 +41,8 @@
                 </publish-collection>
             </div>
 
-            <!-- 其它 -->
-            <div class="m-publish-other">
-                <publish-banner v-model="post.banner_img"></publish-banner>
-            </div>
+            <!-- 附图 -->
+            <div class="m-publish-extraimg"></div>
 
             <div class="m-publish-doc">
                 <el-checkbox v-model="hasRead" :true-label="1" :false-label="0"
@@ -83,7 +80,6 @@ import publish_header from "@/components/publish_header.vue";
 import publish_title from "@/components/publish_title.vue";
 import publish_collection from "@/components/publish_collection";
 
-import publish_banner from "@/components/publish_banner";
 import publish_revision from "@/components/publish_revision.vue";
 import publish_subtype from "@/components/publish_subtype";
 
@@ -100,7 +96,6 @@ export default {
         "publish-header": publish_header,
         "publish-title": publish_title,
         "publish-collection": publish_collection,
-        "publish-banner": publish_banner,
         "publish-revision": publish_revision,
         "publish-subtype": publish_subtype,
     },
@@ -115,28 +110,22 @@ export default {
             post: {
                 // 文章ID
                 id: "",
-                // 状态：publish公开、private私有、draft草稿、dustbin删除
-                // post_status: "publish",
+
                 // 分类
                 category: "讨论",
-                // 子分类
-                sub_category: "",
+                // 小册id
+                collection_id: "",
+                // 客户端
+                client : 'std',
+
                 // 标题
                 title: "",
-                // 自定义字段
-                post_meta: {},
                 // 内容
                 content: "",
-                // 编辑模式(会影响文章详情页渲染规则)
-                post_mode: "tinymce",
-
-                // 语言：cn简体、tr繁体
-                lang: "cn",
 
                 // 海报
                 banner_img: "",
-                // 小册id
-                collection_id: "",
+
             },
 
             // 选项
