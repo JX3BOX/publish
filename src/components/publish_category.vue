@@ -2,7 +2,7 @@
     <div class="m-category-list">
         <span class="u-category">类别</span>
         <el-radio-group v-model="category">
-            <el-radio v-for="item in options" :key="item" :label="item">{{ item }}</el-radio>
+            <el-radio border v-for="item in options" :key="item" :label="item">{{ item }}</el-radio>
         </el-radio-group>
     </div>
 </template>
@@ -48,15 +48,20 @@ export default {
     .flex;
     .u-category {
         min-width: 80px;
+        .fz(14px);
         align-items: center;
     }
     .el-radio-group {
         flex: 1;
-        gap: 12px; /* 设置网格项之间的间隔 */
-        display: grid;
-        grid-auto-flow: row; /* 默认值，项目会按行填充 */
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        width: 100%; /* 或者设置为特定的宽度 */
+        // gap: 12px; /* 设置网格项之间的间隔 */
+        // display: grid;
+        // grid-auto-flow: row; /* 默认值，项目会按行填充 */
+        // grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        // width: 100%; /* 或者设置为特定的宽度 */
+        .el-radio{
+            .w(120px);
+            .mb(10px);
+        }
     }
 }
 </style>

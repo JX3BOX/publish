@@ -37,9 +37,7 @@
             </div>
 
             <!-- 附图 -->
-            <div class="m-publish-extraimg"></div>
-            <!-- 其它 -->
-            <div class="m-publish-other" v-show="extraImages.length">
+            <div class="m-publish-extraimg" v-show="extraImages.length">
                 <el-divider content-position="left">附图</el-divider>
                 <div class="u-imgs">
                     <div
@@ -48,7 +46,7 @@
                         :key="i"
                         @click="setBannerIndex(i)"
                     >
-                        <img :src="item" alt="" />
+                        <el-image :src="item" fit="cover" style="width: 148px; height: 148px"/>
                         <div class="u-mark">封面</div>
                     </div>
                 </div>
@@ -278,45 +276,44 @@ export default {
 </script>
 
 <style lang="less">
-.p-community {
-    .m-publish-other {
-        .u-imgs {
-            display: flex;
-            gap: 8px;
+.m-publish-extraimg {
+    .u-imgs {
+        display: flex;
+        gap: 8px;
+    }
+    .u-imgs-item {
+        overflow: hidden;
+        border-radius: 6px;
+        box-sizing: border-box;
+        width: 148px;
+        height: 148px;
+        cursor: pointer;
+        position: relative;
+        border: 2px solid transparent;
+        transition: 0.35s;
+        background-color:@bg-light;
+        &:hover {
+            border-color: #0366d6;
         }
-        .u-imgs-item {
-            overflow: hidden;
-            border-radius: 6px;
-            box-sizing: border-box;
-            width: 148px;
-            height: 148px;
-            cursor: pointer;
-            position: relative;
-            border: 2px solid transparent;
-            transition: 0.35s;
-            &:hover {
-                border-color: #0366d6;
-            }
-            &.active {
-                border-color: #0366d6;
-                .u-mark {
-                    display: block;
-                }
-            }
-            img {
-                width: 100%;
-            }
+        &.active {
+            border-color: #0366d6;
             .u-mark {
-                display: none;
-                position: absolute;
-                top: 0;
-                right: 0;
-                padding: 4px 8px;
-                font-size: 12px;
-                background-color: #0366d6;
-                color: white;
-                border-radius: 4px;
+                display: block;
             }
+        }
+        img {
+            width: 100%;
+        }
+        .u-mark {
+            display: none;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: #0366d6;
+            color: white;
+            border-radius: 4px;
         }
     }
 }
