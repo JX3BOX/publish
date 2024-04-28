@@ -36,6 +36,8 @@
                 </publish-collection>
             </div>
 
+            <!-- 附图 -->
+            <div class="m-publish-extraimg"></div>
             <!-- 其它 -->
             <div class="m-publish-other" v-show="extraImages.length">
                 <el-divider content-position="left">附图</el-divider>
@@ -114,21 +116,13 @@ export default {
             post: {
                 // 文章ID
                 id: "",
-                // 状态：publish公开、private私有、draft草稿、dustbin删除
-                // post_status: "publish",
+
                 // 分类
                 category: "",
                 // 标题
                 title: "",
-                // 自定义字段
-                post_meta: {},
                 // 内容
                 content: "",
-                // 编辑模式(会影响文章详情页渲染规则)
-                post_mode: "tinymce",
-
-                // 语言：cn简体、tr繁体
-                lang: "cn",
 
                 // 海报
                 banner_img: "",

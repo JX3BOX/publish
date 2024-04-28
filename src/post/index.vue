@@ -120,7 +120,7 @@
             <el-row :gutter="20">
                 <el-col :span="4">
                     <router-link to="/community">
-                        <i class="el-icon-postcard"></i>
+                        <img svg-inline src="../assets/img/channel/community.svg" />
                         <span>魔盒论坛</span>
                     </router-link>
                 </el-col>
