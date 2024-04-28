@@ -8,7 +8,7 @@
         </div>
 
         <el-input class="m-dashboard-work-search" placeholder="请输入搜索内容" v-model="search">
-            <span slot="prepend">关键词</span>
+            <span slot="prepend">标题</span>
             <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
 
@@ -80,7 +80,7 @@ export default {
             page: 1,
             per: 10,
             content: "",
-            order: "update",
+            // order: "update",
             client: "",
             search: "",
             statusMap,
@@ -94,8 +94,8 @@ export default {
             return {
                 type: this.type,
                 per: this.per,
-                content: this.search,
-                order: this.order,
+                title: this.search || undefined,
+                // order: this.order,
                 pageSize: this.per,
                 index: this.page,
             };
@@ -128,7 +128,6 @@ export default {
             this.loading = true;
             getMyList(this.params)
                 .then((res) => {
-                    console.log(res);
                     this.data = res.data.data.list;
                     this.total = res.data.data.page.total;
                 })
@@ -145,6 +144,8 @@ export default {
                 callback: (action) => {
                     if (action == "confirm") {
                         del(id).then((res) => {
+                            console.log(res);
+                            return;
                             this.$message({
                                 type: "success",
                                 message: `删除成功`,

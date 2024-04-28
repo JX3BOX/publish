@@ -93,8 +93,8 @@ export default {
                 pvp: { path: "/cms/pvp", name: "竞技攻略", count: 0 },
                 fb: { path: "/cms/fb", name: "副本攻略", count: 0 },
                 tool: { path: "/cms/tool", name: "工具资源", count: 0 },
-                community: { path: "/cms/community", name: "魔盒论坛", count: 0 },
                 bbs: { path: "/cms/bbs", name: "竹林茶馆", count: 0 },
+                community: { path: "/cms/community", name: "论坛交流", count: 0 },
             },
             ads: {
                 notice: { path: "/cms/notice", name: "公告资讯", count: 0 },
@@ -231,6 +231,7 @@ export default {
         },
         loadNextCount() {
             getNextStat().then((res) => {
+                console.log(res);
                 let { comment, question, paper, face, pvxbody } = res.data.data;
                 this.comment.comment_cms.count = comment;
                 this.app.exam_question.count = question;
