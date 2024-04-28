@@ -1,5 +1,5 @@
 <template>
-    <div class="m-publish-box" v-loading="loading">
+    <div class="m-publish-box p-community" v-loading="loading">
         <!-- 头部 -->
         <publish-header name="魔盒论坛">
             <publish-revision :enable="true" :post-id="id"></publish-revision>
@@ -14,13 +14,7 @@
                 <el-divider content-position="left">信息</el-divider>
 
                 <!-- 类型 -->
-                <publish-subtype v-model="post.category" :options="community_types"></publish-subtype>
-
-                <el-form-item label="标签">
-                    <el-radio-group v-model="post.sub_category">
-                        <el-radio v-for="item in tags" :key="item" :label="item">{{ item }}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
+                <publish-category v-model="post.category" :options="tags"></publish-category>
             </div>
 
             <!-- 正文 -->
@@ -43,8 +37,19 @@
             </div>
 
             <!-- 其它 -->
-            <div class="m-publish-other">
-                <publish-banner v-model="post.banner_img"></publish-banner>
+            <div class="m-publish-other" v-show="extraImages.length">
+                <el-divider content-position="left">附图</el-divider>
+                <div class="u-imgs">
+                    <div
+                        :class="`u-imgs-item ${selectedBannerIndex === i && 'active'}`"
+                        v-for="(item, i) in extraImages"
+                        :key="i"
+                        @click="setBannerIndex(i)"
+                    >
+                        <img :src="item" alt="" />
+                        <div class="u-mark">封面</div>
+                    </div>
+                </div>
             </div>
 
             <div class="m-publish-doc">
@@ -59,9 +64,6 @@
                     <el-button type="primary" @click="publish('publish', true)" :disabled="processing || !hasRead"
                         >发 &nbsp;&nbsp; 布</el-button
                     >
-                    <!-- <el-button type="plain" @click="publish('draft', false)" :disabled="processing || !hasRead"
-                        >保存为草稿</el-button
-                    > -->
                 </template>
             </div>
         </el-form>
@@ -82,10 +84,8 @@ import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";
 import publish_header from "@/components/publish_header.vue";
 import publish_title from "@/components/publish_title.vue";
 import publish_collection from "@/components/publish_collection";
-
-import publish_banner from "@/components/publish_banner";
 import publish_revision from "@/components/publish_revision.vue";
-import publish_subtype from "@/components/publish_subtype";
+import publish_category from "@/components/publish_category.vue";
 
 // 数据逻辑
 import { getTopicBucket } from "@/service/cms.js";
@@ -100,9 +100,8 @@ export default {
         "publish-header": publish_header,
         "publish-title": publish_title,
         "publish-collection": publish_collection,
-        "publish-banner": publish_banner,
         "publish-revision": publish_revision,
-        "publish-subtype": publish_subtype,
+        "publish-category": publish_category,
     },
     data: function () {
         return {
@@ -118,9 +117,7 @@ export default {
                 // 状态：publish公开、private私有、draft草稿、dustbin删除
                 // post_status: "publish",
                 // 分类
-                category: "讨论",
-                // 子分类
-                sub_category: "",
+                category: "",
                 // 标题
                 title: "",
                 // 自定义字段
@@ -143,19 +140,24 @@ export default {
             community_types,
             tags: [],
             buckets: [],
+            selectedBannerIndex: null,
         };
     },
-
     computed: {
+        extraImages() {
+            const imgs = this.getImgSrc(this.post.content);
+            return imgs;
+        },
+
         id: function () {
             return ~~this.post.id;
         },
         data: function () {
-            const imgs = this.getImgSrc(this.post.content);
             return {
                 ...this.post,
+                client: location.href.includes("origin") ? "origin" : "std",
                 collection_id: this.post.collection_id || undefined,
-                extra_images: imgs,
+                extra_images: this.extraImages,
             };
         },
         isSuperAuthor() {
@@ -171,6 +173,9 @@ export default {
         }
     },
     methods: {
+        setBannerIndex(index) {
+            this.selectedBannerIndex = index;
+        },
         // 初始化
         init: function () {
             // 尝试加载
@@ -193,35 +198,44 @@ export default {
         },
         // 发布
         publish: function () {
+            this.loading = true;
             if (this.data.id) {
-                update(this.data.id, this.data).then((res) => {
-                    this.$message({
-                        message: "更新成功",
-                        type: "success",
+                update(this.data.id, this.data)
+                    .then((res) => {
+                        this.$message({
+                            message: "更新成功",
+                            type: "success",
+                        });
+                        // 跳转
+                        setTimeout(() => {
+                            location.href = `/community/${res.data.data.id}`;
+                        }, 500);
+                    })
+                    .finally(() => {
+                        this.loading = false;
                     });
-                    // 跳转
-                    setTimeout(() => {
-                        location.href = `/community/${res.data.data.id}`;
-                    }, 500);
-                });
             } else {
-                push(this.data).then((res) => {
-                    this.$message({
-                        message: "发布成功",
-                        type: "success",
+                push(this.data)
+                    .then((res) => {
+                        this.$message({
+                            message: "发布成功",
+                            type: "success",
+                        });
+                        // 跳转
+                        setTimeout(() => {
+                            location.href = `/community/${res.data.data.id}`;
+                        }, 500);
+                    })
+                    .finally(() => {
+                        this.loading = false;
                     });
-                    // 跳转
-                    setTimeout(() => {
-                        location.href = `/community/${res.data.data.id}`;
-                    }, 500);
-                });
             }
 
             // t
         },
         getImgSrc: function (htmlString) {
-            // 创建一个正则表达式来匹配<img>标签，并且捕获src属性的值
-            const imgSrcRegex = /<img\s+[^>]*src="([^"]*)"/g;
+            // 创建一个正则表达式来匹配没有class属性的<img>标签，并且捕获src属性的值
+            const imgSrcRegex = /<img\s+(?![^>]*\bclass\b)[^>]*src="([^"]*)"/g;
             let matches;
             const imgSrcs = [];
 
@@ -233,16 +247,83 @@ export default {
 
             return imgSrcs;
         },
-
         getTopicBucket() {
             getTopicBucket({ type: "community" }).then((res) => {
                 const data = res.data.data?.map((item) => item.name) || [];
                 if (data[0]) {
-                    this.post.sub_category = data[0];
+                    this.post.category = data[0];
                 }
                 this.tags = [...data];
             });
         },
     },
+    watch: {
+        extraImages() {
+            if (this.extraImages.length) {
+                //  初始化banner_img
+                if (this.selectedBannerIndex === null) {
+                    this.selectedBannerIndex = 0;
+                } else {
+                    if (!this.extraImages[this.selectedBannerIndex]) {
+                        this.selectedBannerIndex = 0;
+                    }
+                }
+            } else {
+                // 附图被清空 banner_img 也要去掉
+                this.selectedBannerIndex = null;
+            }
+        },
+        selectedBannerIndex() {
+            if (this.selectedBannerIndex !== null && this.extraImages[this.selectedBannerIndex]) {
+                this.post.banner_img = this.extraImages[this.selectedBannerIndex];
+            }
+            return "";
+        },
+    },
 };
 </script>
+
+<style lang="less">
+.p-community {
+    .m-publish-other {
+        .u-imgs {
+            display: flex;
+            gap: 8px;
+        }
+        .u-imgs-item {
+            overflow: hidden;
+            border-radius: 6px;
+            box-sizing: border-box;
+            width: 148px;
+            height: 148px;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+            transition: 0.35s;
+            &:hover {
+                border-color: #0366d6;
+            }
+            &.active {
+                border-color: #0366d6;
+                .u-mark {
+                    display: block;
+                }
+            }
+            img {
+                width: 100%;
+            }
+            .u-mark {
+                display: none;
+                position: absolute;
+                top: 0;
+                right: 0;
+                padding: 4px 8px;
+                font-size: 12px;
+                background-color: #0366d6;
+                color: white;
+                border-radius: 4px;
+            }
+        }
+    }
+}
+</style>

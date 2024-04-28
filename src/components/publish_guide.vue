@@ -1,8 +1,7 @@
 <template>
     <!-- 前后引导 -->
     <div class="m-publish-guide">
-        <label class="el-form-item__label">前后引导
-        </label>
+        <label class="el-form-item__label">前后引导 </label>
         <div class="u-condition u-prev" key="prev">
             <span class="u-prepend el-input-group__prepend">上一篇</span>
             <el-select
@@ -16,7 +15,9 @@
             >
                 <el-option v-for="item in prev" :key="item.ID" :value="item.ID" :label="item.post_title">
                     <div class="u-post-select__item">
-                        <el-tag size="mini" v-if="item.post_type" :type="item.visible != 0 ? 'warning' : ''">{{ showPostType(item.post_type) }}</el-tag>
+                        <el-tag size="mini" v-if="item.post_type" :type="item.visible != 0 ? 'warning' : ''">{{
+                            showPostType(item.post_type)
+                        }}</el-tag>
                         {{ item.post_title }}
                     </div></el-option
                 >
@@ -35,7 +36,9 @@
             >
                 <el-option v-for="item in next" :key="item.ID" :value="item.ID" :label="item.post_title">
                     <div class="u-post-select__item">
-                        <el-tag size="mini" v-if="item.post_type" :type=" item.visible != 0 ? 'warning' : ''">{{ showPostType(item.post_type) }}</el-tag>
+                        <el-tag size="mini" v-if="item.post_type" :type="item.visible != 0 ? 'warning' : ''">{{
+                            showPostType(item.post_type)
+                        }}</el-tag>
                         {{ item.post_title }}
                     </div></el-option
                 >
@@ -50,7 +53,7 @@
 <script>
 import { __postType } from "@jx3box/jx3box-common/data/jx3box.json";
 import { getMyPosts } from "@/service/cms";
-import { cloneDeep, } from "lodash";
+import { cloneDeep } from "lodash";
 export default {
     name: "PublishGuide",
     props: {
@@ -86,14 +89,13 @@ export default {
                     if (list) {
                         const res = await this.loadPosts({ list });
 
-                        this.prev = [...res,...this.prev]
-                        this.next = [...res,...this.next]
+                        this.prev = [...res, ...this.prev];
+                        this.next = [...res, ...this.next];
                     }
                     this.isInit = false;
                 }
             },
             deep: true,
-
         },
     },
     async mounted() {
@@ -111,7 +113,7 @@ export default {
                     title: keyword,
                     page: 1,
                     per: 10,
-                }
+                };
                 const res = await this.loadPosts(params);
                 this.prev = cloneDeep(res);
             } else {
@@ -124,7 +126,7 @@ export default {
                     title: keyword,
                     page: 1,
                     per: 10,
-                }
+                };
                 const res = await this.loadPosts(params);
                 this.next = cloneDeep(res);
             } else {

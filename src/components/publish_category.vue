@@ -1,0 +1,62 @@
+<template>
+    <div class="m-category-list">
+        <span class="u-category">类别</span>
+        <el-radio-group v-model="category">
+            <el-radio v-for="item in options" :key="item" :label="item">{{ item }}</el-radio>
+        </el-radio-group>
+    </div>
+</template>
+
+<script>
+export default {
+    props: {
+        options: {
+            type: Array,
+            required: true,
+        },
+        value: {
+            type: [String, Number],
+            default: "",
+        },
+    },
+    data() {
+        return {
+            category: this.value,
+        };
+    },
+    watch: {
+        // 监听外部传递的 value 属性的变化
+        value(newVal) {
+            this.category = newVal;
+        },
+    },
+    model: {
+        prop: "value",
+        event: "update",
+    },
+    methods: {
+        // 当 radio-group 内部的 category 变化时，更新到外部的 value 上
+        updateCategory(newVal) {
+            this.$emit("update", newVal);
+        },
+    },
+};
+</script>
+
+<style lang="less">
+.m-category-list {
+    .flex;
+    .u-category {
+        min-width: 80px;
+        align-items: center;
+    }
+    .el-radio-group {
+        flex: 1;
+        gap: 12px; /* 设置网格项之间的间隔 */
+        display: grid;
+        grid-auto-flow: row; /* 默认值，项目会按行填充 */
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        width: 100%; /* 或者设置为特定的宽度 */
+    }
+}
+</style>
