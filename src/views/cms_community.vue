@@ -144,8 +144,6 @@ export default {
                 callback: (action) => {
                     if (action == "confirm") {
                         del(id).then((res) => {
-                            console.log(res);
-                            return;
                             this.$message({
                                 type: "success",
                                 message: `删除成功`,

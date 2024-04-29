@@ -41,12 +41,12 @@
                 <el-divider content-position="left">附图</el-divider>
                 <div class="u-imgs">
                     <div
-                        :class="`u-imgs-item ${selectedBannerIndex === i && 'active'}`"
+                        :class="`u-imgs-item ${post.banner_img === item && 'active'}`"
                         v-for="(item, i) in extraImages"
                         :key="i"
-                        @click="setBannerIndex(i)"
+                        @click="setBannerIndex(item)"
                     >
-                        <el-image :src="item" fit="cover" style="width: 148px; height: 148px"/>
+                        <el-image :src="item" fit="cover" style="width: 148px; height: 148px" />
                         <div class="u-mark">封面</div>
                     </div>
                 </div>
@@ -132,13 +132,13 @@ export default {
             community_types,
             tags: [],
             buckets: [],
-            selectedBannerIndex: null,
         };
     },
     computed: {
         extraImages() {
             const imgs = this.getImgSrc(this.post.content);
-            return imgs;
+
+            return [...new Set(imgs)];
         },
 
         id: function () {
@@ -150,6 +150,7 @@ export default {
                 client: location.href.includes("origin") ? "origin" : "std",
                 collection_id: this.post.collection_id || undefined,
                 extra_images: this.extraImages,
+                introduction: this.getIntroduction(this.post.content),
             };
         },
         isSuperAuthor() {
@@ -165,8 +166,15 @@ export default {
         }
     },
     methods: {
-        setBannerIndex(index) {
-            this.selectedBannerIndex = index;
+        getIntroduction(str) {
+            // 使用正则表达式匹配HTML标签并将其替换为空字符串
+            const withoutTags = str.replace(/<[^>]*>|\n/g, "");
+
+            // 获取前100个字符，如果字符串长度小于100，则获取全部字符
+            return withoutTags.slice(0, 100);
+        },
+        setBannerIndex(img) {
+            this.post.banner_img = img;
         },
         // 初始化
         init: function () {
@@ -200,7 +208,7 @@ export default {
                         });
                         // 跳转
                         setTimeout(() => {
-                            location.href = `/community/${res.data.data.id}`;
+                            location.href = `/community/${this.post.id || res.data.data.id}`;
                         }, 500);
                     })
                     .finally(() => {
@@ -215,7 +223,7 @@ export default {
                         });
                         // 跳转
                         setTimeout(() => {
-                            location.href = `/community/${res.data.data.id}`;
+                            location.href = `/community/${this.post.id || res.data.data.id}`;
                         }, 500);
                     })
                     .finally(() => {
@@ -253,23 +261,21 @@ export default {
         extraImages() {
             if (this.extraImages.length) {
                 //  初始化banner_img
-                if (this.selectedBannerIndex === null) {
-                    this.selectedBannerIndex = 0;
+                console.log("this.post.banner_img", this.post.banner_img);
+                if (!this.post.banner_img) {
+                    this.post.banner_img = this.extraImages[0];
                 } else {
-                    if (!this.extraImages[this.selectedBannerIndex]) {
-                        this.selectedBannerIndex = 0;
+                    const findData = this.extraImages.find((item) => item === this.post.banner_img);
+                    console.log("findData", findData);
+                    if (!findData) {
+                        this.post.banner_img = this.extraImages[0];
                     }
                 }
             } else {
+                console.log("this.post.banner_img", this.post.banner_img);
                 // 附图被清空 banner_img 也要去掉
-                this.selectedBannerIndex = null;
+                this.post.banner_img = "";
             }
-        },
-        selectedBannerIndex() {
-            if (this.selectedBannerIndex !== null && this.extraImages[this.selectedBannerIndex]) {
-                this.post.banner_img = this.extraImages[this.selectedBannerIndex];
-            }
-            return "";
         },
     },
 };
@@ -291,7 +297,7 @@ export default {
         position: relative;
         border: 2px solid transparent;
         transition: 0.35s;
-        background-color:@bg-light;
+        background-color: @bg-light;
         &:hover {
             border-color: #0366d6;
         }
