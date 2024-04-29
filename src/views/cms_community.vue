@@ -1,5 +1,5 @@
 <template>
-    <div class="m-dashboard-work m-dashboard-cms" v-loading="loading">
+    <div class="m-dashboard-work m-dashboard-cms p-cms-community" v-loading="loading">
         <div class="m-dashboard-work-header">
             <h2 class="u-title">论坛</h2>
             <a :href="publishLink" class="u-publish el-button el-button--primary el-button--small">
@@ -13,7 +13,7 @@
         </el-input>
 
         <div class="m-dashboard-work-filter">
-            <!-- <clientBy class="u-client" @filter="filter" :showWujie="showWujie" /> -->
+            <clientBy class="u-client" @filter="filter" :showWujie="showWujie" />
             <!-- <orderBy class="u-order" @filter="filter" /> -->
         </div>
 
@@ -24,7 +24,14 @@
                         <img src="../assets/img/works/repo.svg" />
                         <!-- <img v-else src="../assets/img/works/draft.svg" :title="item.post_status | statusFormat" /> -->
                     </i>
-                    <a class="u-title" target="_blank" :href="postLink(item.id)">{{ item.title || "无标题" }}</a>
+                    <a class="u-title" target="_blank" :href="postLink(item.id)">
+                        <span>{{ item.title || "无标题" }}</span>
+                        <div class="u-tags">
+                            <el-tag type="danger" size="mini" v-if="item.is_top == 1">置顶</el-tag>
+                            <el-tag type="danger" size="mini" v-if="item.is_star == 1">加精</el-tag>
+                            <el-tag type="danger" size="mini" v-if="item.is_hight == 1">高亮</el-tag>
+                        </div>
+                    </a>
                     <div class="u-desc">
                         <time class="u-desc-subitem">
                             <i class="el-icon-finished"></i>
@@ -35,6 +42,11 @@
                             <i class="el-icon-refresh"></i>
                             更新 :
                             {{ item.updated_at | dateFormat }}
+                        </time>
+                        <time class="u-desc-subitem">
+                            <i class="el-icon-receiving"></i>
+                            状态 :
+                            {{ getStatusCn(item.status) }}
                         </time>
                     </div>
 
@@ -98,6 +110,7 @@ export default {
                 // order: this.order,
                 pageSize: this.per,
                 index: this.page,
+                client: this.client,
             };
         },
         publishLink: function () {
@@ -124,6 +137,19 @@ export default {
         },
     },
     methods: {
+        getStatusCn: function (status) {
+            switch (status) {
+                case 1:
+                    return "正常";
+                case 2:
+                    return "待审核";
+                case 3:
+                    return "审核未通过";
+
+                default:
+                    return "未知状态";
+            }
+        },
         loadPosts: function () {
             this.loading = true;
             getMyList(this.params)
@@ -180,6 +206,7 @@ export default {
             return `/community/${id}`;
         },
         filter: function (o) {
+            console.log(o);
             this.page = 1;
             this[o.type] = o.val;
         },
@@ -207,4 +234,16 @@ export default {
 
 <style lang="less">
 @import "../assets/css/work.less";
+
+.p-cms-community {
+    .u-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        .u-tags {
+            display: flex;
+            gap: 4px;
+        }
+    }
+}
 </style>

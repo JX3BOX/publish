@@ -168,7 +168,7 @@ export default {
     methods: {
         getIntroduction(str) {
             // 使用正则表达式匹配HTML标签并将其替换为空字符串
-            const withoutTags = str.replace(/<[^>]*>|\n/g, "");
+            const withoutTags = str.replace(/<[^>]*>|\n|&nbsp;| &nbsp;/g, "");
 
             // 获取前100个字符，如果字符串长度小于100，则获取全部字符
             return withoutTags.slice(0, 100);
@@ -266,7 +266,6 @@ export default {
                     this.post.banner_img = this.extraImages[0];
                 } else {
                     const findData = this.extraImages.find((item) => item === this.post.banner_img);
-                    console.log("findData", findData);
                     if (!findData) {
                         this.post.banner_img = this.extraImages[0];
                     }
