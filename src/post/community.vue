@@ -12,7 +12,8 @@
             <!-- 信息 -->
             <div class="m-publish-info">
                 <el-divider content-position="left">信息</el-divider>
-
+                <!-- 客户端 -->
+                <publish-client v-model="post.client" :showMobile="true"></publish-client>
                 <!-- 类型 -->
                 <publish-category v-model="post.category" :options="tags"></publish-category>
             </div>
@@ -86,6 +87,7 @@ import publish_title from "@/components/publish_title.vue";
 import publish_collection from "@/components/publish_collection";
 import publish_revision from "@/components/publish_revision.vue";
 import publish_category from "@/components/publish_category.vue";
+import publish_client from "@/components/publish_client.vue";
 
 // 数据逻辑
 import { getTopicBucket } from "@/service/cms.js";
@@ -102,6 +104,7 @@ export default {
         "publish-collection": publish_collection,
         "publish-revision": publish_revision,
         "publish-category": publish_category,
+        "publish-client": publish_client,
     },
     data: function () {
         return {
@@ -147,7 +150,6 @@ export default {
         data: function () {
             return {
                 ...this.post,
-                client: location.href.includes("origin") ? "origin" : "std",
                 collection_id: this.post.collection_id || undefined,
                 extra_images: this.extraImages,
                 introduction: this.getIntroduction(this.post.content),
@@ -188,7 +190,7 @@ export default {
             pull(id).then((res) => {
                 const data = res.data.data;
                 this.post = {
-                    ...this.post,
+                    ...data,
                     title: data.title,
                     content: data.content,
                     collection_id: data.collection_id,
