@@ -1,7 +1,7 @@
 <template>
     <div class="m-category-list">
         <span class="u-category">类别</span>
-        <el-radio-group v-model="category">
+        <el-radio-group v-model="category" @change="updateCategory">
             <el-radio border v-for="item in options" :key="item" :label="item">{{ item }}</el-radio>
         </el-radio-group>
     </div>
@@ -58,7 +58,7 @@ export default {
         // grid-auto-flow: row; /* 默认值，项目会按行填充 */
         // grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         // width: 100%; /* 或者设置为特定的宽度 */
-        .el-radio{
+        .el-radio {
             .w(120px);
             .mb(10px);
         }

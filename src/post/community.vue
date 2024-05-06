@@ -147,6 +147,7 @@ export default {
         data: function () {
             return {
                 ...this.post,
+                category: this.post.category,
                 client: location.href.includes("origin") ? "origin" : "std",
                 collection_id: this.post.collection_id || undefined,
                 extra_images: this.extraImages,
@@ -170,8 +171,8 @@ export default {
             // 使用正则表达式匹配HTML标签并将其替换为空字符串
             const withoutTags = str.replace(/<[^>]*>|\n|&nbsp;| &nbsp;/g, "");
 
-            // 获取前100个字符，如果字符串长度小于100，则获取全部字符
-            return withoutTags.slice(0, 100);
+            // 获取前100个字符，如果字符串长度小于200，则获取全部字符
+            return withoutTags.slice(0, 200);
         },
         setBannerIndex(img) {
             this.post.banner_img = img;
@@ -284,13 +285,14 @@ export default {
 .m-publish-extraimg {
     .u-imgs {
         display: flex;
+        overflow-x: auto;
         gap: 8px;
     }
     .u-imgs-item {
+        min-width: 148px;
         overflow: hidden;
         border-radius: 6px;
         box-sizing: border-box;
-        width: 148px;
         height: 148px;
         cursor: pointer;
         position: relative;
