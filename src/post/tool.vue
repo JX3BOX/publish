@@ -79,7 +79,8 @@
 
             <!-- 其它 -->
             <div class="m-publish-other">
-                <publish-banner v-model="post.post_banner"></publish-banner>
+                <publish-banner v-model="post.post_banner" :isSuperAuthor="isSuperAuthor"></publish-banner>
+                <publish-design-task v-if="isSuperAuthor" :data="post"></publish-design-task>
             </div>
 
             <div class="m-publish-doc">
@@ -243,9 +244,6 @@ export default {
             } else {
                 return [this.post];
             }
-        },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
         },
     },
     mounted() {

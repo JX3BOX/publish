@@ -1,7 +1,7 @@
 <template>
-    <div class="m-publish-banner">
+    <div class="m-publish-banner" :class="{'is-super-author': isSuperAuthor}">
         <el-divider content-position="left">海报</el-divider>
-        <uploadImage v-model="banner" :info="info" :max-size="30" :size="size"></uploadImage>
+        <uploadImage v-model="banner" :info="info" :max-size="30" :size="bannerSize"></uploadImage>
     </div>
 </template>
 
@@ -11,7 +11,7 @@ import uploadImage from '@jx3box/jx3box-common-ui/src/upload/upload_banner.vue'
 export default {
     name: "post_banner",
     components: {
-        uploadImage
+        uploadImage,
     },
     props: {
         data: {
@@ -26,10 +26,15 @@ export default {
             type: String,
             default: "非必选。首页海报尺寸1600*280（推荐3200*560支持高分屏），最大30M。",
         },
+        isSuperAuthor: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {
             banner: this.data,
+            bannerSize: this.size,
         };
     },
     model: {
@@ -43,6 +48,14 @@ export default {
         banner: function(newval) {
             this.$emit("update", newval);
         },
+        isSuperAuthor: {
+            immediate: true,
+            handler (val) {
+                if (val) {
+                    this.bannerSize = [600, 200];
+                }
+            }
+        },
     },
 };
 </script>
@@ -54,6 +67,11 @@ export default {
     }
     img {
         max-width: 180px;
+    }
+    &.is-super-author {
+        img {
+            max-width: 600px;
+        }
     }
     .avatar-uploader{
         .mt(10px);

@@ -85,4 +85,9 @@ function getConfig(key){
     });
 }
 
-export { pull, push, del, getMyPostsCount, getMyPosts, getAllPosts, upload, getBreadCrumb, getPostMeta, setPostMeta, getChangelog, getHasteRecommend, getTopicBucket, getConfig };
+// 获取design_task
+function getDesignTask(params){
+    return $cms().get(`/api/cms/design/task/log`, {params});
+}
+
+export { pull, push, del, getMyPostsCount, getMyPosts, getAllPosts, upload, getBreadCrumb, getPostMeta, setPostMeta, getChangelog, getHasteRecommend, getTopicBucket, getConfig, getDesignTask };

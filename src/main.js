@@ -18,6 +18,9 @@ Vue.use(VueClipboard)
 import reporter from "@jx3box/jx3box-common/js/reporter";
 reporter.install(Vue);
 
+import PublishDesignTask from "@/components/publish_design_task.vue";
+Vue.component(PublishDesignTask.name, PublishDesignTask)
+
 // 监听 sessionStorage 变化
 import handleSessionStorage from '@/utils/handleSessionStorage.js'
 Vue.use(handleSessionStorage)
