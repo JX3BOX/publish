@@ -80,8 +80,8 @@
 
             <!-- 其它 -->
             <div class="m-publish-other" v-if="isSuperAuthor">
-                <publish-banner v-model="post.post_banner" :isSuperAuthor="isSuperAuthor"></publish-banner>
-                <publish-design-task v-if="isSuperAuthor" :data="post"></publish-design-task>
+                <cms-banner v-model="post.post_banner"></cms-banner>
+                <publish-design-task :data="post"></publish-design-task>
             </div>
 
             <div class="m-publish-doc">
@@ -158,7 +158,7 @@ export default {
         "publish-xf": publish_xf,
         "publish-collection": publish_collection,
         "publish-collection-collapse": publish_collection_collapse,
-        "publish-banner": publish_banner,
+        // "publish-banner": publish_banner,
         "publish-comment": publish_comment,
         "publish-gift": publish_gift,
         "publish-visible": publish_visible,

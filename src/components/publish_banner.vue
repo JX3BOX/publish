@@ -1,7 +1,7 @@
 <template>
-    <div class="m-publish-banner" :class="{'is-super-author': isSuperAuthor}">
+    <div class="m-publish-banner">
         <el-divider content-position="left">海报</el-divider>
-        <uploadImage v-model="banner" :info="info" :max-size="30" :size="bannerSize"></uploadImage>
+        <uploadImage v-model="banner" :info="info" :max-size="30" :size="size"></uploadImage>
     </div>
 </template>
 
@@ -24,17 +24,12 @@ export default {
         },
         info: {
             type: String,
-            default: "非必选。首页海报尺寸1600*280（推荐3200*560支持高分屏），最大30M。",
+            default: "非必选，最大30M。",
         },
-        isSuperAuthor: {
-            type: Boolean,
-            default: false
-        }
     },
     data() {
         return {
             banner: this.data,
-            bannerSize: this.size,
         };
     },
     model: {
@@ -48,14 +43,6 @@ export default {
         banner: function(newval) {
             this.$emit("update", newval);
         },
-        isSuperAuthor: {
-            immediate: true,
-            handler (val) {
-                if (val) {
-                    this.bannerSize = [600, 200];
-                }
-            }
-        },
     },
 };
 </script>
@@ -65,14 +52,9 @@ export default {
     .u-tip{
         padding:5px 15px;
     }
-    img {
-        max-width: 180px;
-    }
-    &.is-super-author {
-        img {
-            max-width: 600px;
-        }
-    }
+    // img {
+    //     max-width: 180px;
+    // }
     .avatar-uploader{
         .mt(10px);
     }

@@ -20,6 +20,8 @@ reporter.install(Vue);
 
 import PublishDesignTask from "@/components/publish_design_task.vue";
 Vue.component(PublishDesignTask.name, PublishDesignTask)
+import CmsBanner from "@/components/cms_banner.vue";
+Vue.component(CmsBanner.name, CmsBanner)
 
 // 监听 sessionStorage 变化
 import handleSessionStorage from '@/utils/handleSessionStorage.js'
