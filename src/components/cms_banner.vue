@@ -1,6 +1,6 @@
 <template>
     <div class="m-cms-banner">
-        <publishBanner v-model="banner" :size="size" :info="info"></publishBanner>
+        <publishBanner v-model="banner" :size="size" :info="info" is-cms></publishBanner>
     </div>
 </template>
 
@@ -44,3 +44,12 @@ export default {
     },
 }
 </script>
+
+<style lang="less">
+.m-cms-banner {
+    .u-upload {
+        width: 300px !important;
+        height: 100px !important;
+    }
+}
+</style>

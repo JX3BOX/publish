@@ -1,7 +1,7 @@
 <template>
     <div class="m-publish-banner">
         <el-divider content-position="left">海报</el-divider>
-        <uploadImage v-model="banner" :info="info" :max-size="30" :size="size"></uploadImage>
+        <uploadImage v-model="banner" :info="info" :max-size="30" :size="bannerSize"></uploadImage>
     </div>
 </template>
 
@@ -26,6 +26,10 @@ export default {
             type: String,
             default: "非必选，最大30M。",
         },
+        isCms: {
+            type: Boolean,
+            default: false,
+        },
     },
     data() {
         return {
@@ -44,6 +48,11 @@ export default {
             this.$emit("update", newval);
         },
     },
+    computed: {
+        bannerSize() {
+            return this.isCms ? this.size?.map((item) => item * 2) : this.size
+        },
+    }
 };
 </script>
 
