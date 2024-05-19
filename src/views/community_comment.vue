@@ -74,7 +74,7 @@ export default {
             total: 1,
             page: 1,
             per: 10,
-            // search: "",
+            search: "",
         };
     },
     computed: {
@@ -82,7 +82,7 @@ export default {
             return {
                 per: this.per,
                 page: this.page,
-                // search: this.search,
+                search: this.search,
             };
         },
     },
