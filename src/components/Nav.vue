@@ -166,6 +166,11 @@ export default {
                     name: "百科评论",
                     count: 0,
                 },
+                my_comment: {
+                    path: "/comment/community",
+                    name: "我的回帖",
+                    count: 0,
+                },
                 // feedback: {
                 //     path: "/comment/feedback",
                 //     name: "反馈建议",

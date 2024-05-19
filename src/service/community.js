@@ -20,4 +20,20 @@ function del(id) {
 function pull(id) {
     return $next().get(`${API_PREFIX}/community/discussion/my/topic/item/${id}`);
 }
-export { push, getMyList, del, pull, update };
+
+// 获取回帖列表
+function getMyReplyList(params) {
+    return $next().get(`${API_PREFIX}/community/discussion/my/reply/list`, { params });
+}
+
+// 获取评论列表
+function getMyCommentList(params) {
+    return $next().get(`${API_PREFIX}/community/discussion/my/comment/list`, { params });
+}
+
+// 删除我的评论
+function deleteMyComment(id) {
+    return $next().delete(`${API_PREFIX}/community/discussion/my/comment/item/${id}`);
+}
+
+export { push, getMyList, del, pull, update, getMyReplyList, getMyCommentList, deleteMyComment };

@@ -7,12 +7,17 @@
             </a>
         </div>
 
+        <el-tabs v-model="activeTab">
+            <el-tab-pane label="主题" name="topic"></el-tab-pane>
+            <el-tab-pane label="回帖" name="reply"></el-tab-pane>
+        </el-tabs>
+
         <el-input class="m-dashboard-work-search" placeholder="请输入搜索内容" v-model="search">
             <span slot="prepend">标题</span>
             <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
 
-        <div class="m-dashboard-work-filter">
+        <div class="m-dashboard-work-filter" v-if="activeTab == 'topic'">
             <clientBy class="u-client" @filter="filter" :showWujie="showWujie" />
             <!-- <orderBy class="u-order" @filter="filter" /> -->
         </div>
@@ -78,9 +83,10 @@
 </template>
 
 <script>
-import { getMyList, del } from "@/service/community.js";
+import { getMyList, del, getMyReplyList } from "@/service/community.js";
 import dateFormat from "../utils/dateFormat";
 import statusMap from "@/assets/data/status.json";
+import {pick} from "lodash";
 export default {
     name: "work",
     props: [],
@@ -96,6 +102,8 @@ export default {
             client: "",
             search: "",
             statusMap,
+
+            activeTab: "topic",
         };
     },
     computed: {
@@ -105,7 +113,6 @@ export default {
         params: function () {
             return {
                 type: this.type,
-                per: this.per,
                 title: this.search || undefined,
                 // order: this.order,
                 pageSize: this.per,
@@ -135,6 +142,13 @@ export default {
                 this.loadPosts();
             },
         },
+        activeTab: {
+            immediate: true,
+            handler: function () {
+                this.page = 1;
+                this.loadPosts();
+            },
+        },
     },
     methods: {
         getStatusCn: function (status) {
@@ -152,14 +166,28 @@ export default {
         },
         loadPosts: function () {
             this.loading = true;
-            getMyList(this.params)
-                .then((res) => {
-                    this.data = res.data.data.list;
-                    this.total = res.data.data.page.total;
-                })
-                .finally(() => {
-                    this.loading = false;
-                });
+            this.data = [];
+            if (this.activeTab == 'topic') {
+                getMyList(this.params)
+                    .then((res) => {
+                        this.data = res.data.data.list;
+                        this.total = res.data.data.page.total;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
+            } else {
+                const params = pick(this.params, ["pageSize", "index"]);
+                this.search && (params.content = this.search);
+                getMyReplyList(params)
+                    .then((res) => {
+                        this.data = res.data.data.list;
+                        this.total = res.data.data.page.total;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
+            }
         },
         edit: function (id) {
             location.href = "./#/community/" + id;
@@ -206,7 +234,6 @@ export default {
             return `/community/${id}`;
         },
         filter: function (o) {
-            console.log(o);
             this.page = 1;
             this[o.type] = o.val;
         },

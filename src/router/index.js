@@ -64,6 +64,7 @@ const bucket_face = () => import("../bucket/face.vue");
 const bucket_body = () => import("../bucket/body.vue");
 
 const cmsCommunity = () => import("../views/cms_community.vue");
+const community_comment = () => import("../views/community_comment.vue");
 
 Vue.use(VueRouter);
 
@@ -316,6 +317,10 @@ const routes = [
     {
         path: "/comment/feedback",
         component: feedback,
+    },
+    {
+        path: "/comment/community",
+        component: community_comment,
     },
 ];
 
