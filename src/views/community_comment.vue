@@ -20,9 +20,7 @@
                         />
                         <img v-else svg-inline src="../assets/img/works/draft.svg" /> -->
                     </i>
-                    <a class="u-title" target="_blank" :href="postLink(item.category, item.postID)">{{
-                        item.content || "未知"
-                    }}</a>
+                    <a class="u-title" target="_blank" :href="postLink(item.topic_id)">{{ item.content || "未知" }}</a>
                     <!-- <span class="u-desc">{{item.content || '未知'}}</span> -->
                     <div class="u-desc">
                         <time class="u-desc-subitem">
@@ -61,9 +59,9 @@
 </template>
 
 <script>
-import {showTime} from "@jx3box/jx3box-common/js/moment"
+import { showTime } from "@jx3box/jx3box-common/js/moment";
 import { getMyCommentList as getMyComments, deleteMyComment as deleteComment } from "@/service/community";
-import { getLink } from "@jx3box/jx3box-common/js/utils.js";
+// import { getLink } from "@jx3box/jx3box-common/js/utils.js";
 export default {
     name: "comments",
     props: [],
@@ -99,8 +97,8 @@ export default {
                     this.loading = false;
                 });
         },
-        postLink: function (type, id) {
-            return getLink(type, id);
+        postLink: function (id) {
+            return `/community/${id}`;
         },
         del: function (id, i) {
             this.$alert("确定删除吗？", "消息", {

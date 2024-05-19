@@ -13,7 +13,7 @@
         </el-tabs>
 
         <el-input class="m-dashboard-work-search" placeholder="请输入搜索内容" v-model="search">
-            <span slot="prepend">标题</span>
+            <span slot="prepend">关键词</span>
             <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
 
@@ -31,11 +31,11 @@
                     </i>
                     <a class="u-title" target="_blank" :href="postLink(item.id)">
                         <span>{{ item.title || "无标题" }}</span>
-                        <div class="u-tags">
+                        <!-- <div class="u-tags">
                             <el-tag type="danger" size="mini" v-if="item.is_top == 1">置顶</el-tag>
                             <el-tag type="danger" size="mini" v-if="item.is_star == 1">加精</el-tag>
                             <el-tag type="danger" size="mini" v-if="item.is_hight == 1">高亮</el-tag>
-                        </div>
+                        </div> -->
                     </a>
                     <div class="u-desc">
                         <time class="u-desc-subitem">

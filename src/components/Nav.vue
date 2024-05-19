@@ -168,7 +168,7 @@ export default {
                 },
                 my_comment: {
                     path: "/comment/community",
-                    name: "我的回帖",
+                    name: "帖子评论",
                     count: 0,
                 },
                 // feedback: {
