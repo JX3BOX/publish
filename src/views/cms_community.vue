@@ -30,7 +30,7 @@
                         <!-- <img v-else src="../assets/img/works/draft.svg" :title="item.post_status | statusFormat" /> -->
                     </i>
                     <a class="u-title" target="_blank" :href="postLink(item.id)">
-                        <span>{{ item.title || "无标题" }}</span>
+                        <span>{{ item.title || item.content || "无标题" }}</span>
                         <!-- <div class="u-tags">
                             <el-tag type="danger" size="mini" v-if="item.is_top == 1">置顶</el-tag>
                             <el-tag type="danger" size="mini" v-if="item.is_star == 1">加精</el-tag>
