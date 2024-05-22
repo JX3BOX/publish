@@ -236,13 +236,14 @@ export default {
         },
         loadNextCount() {
             getNextStat().then((res) => {
-                let { comment, question, paper, face, pvxbody, community_topic } = res.data.data;
+                let { comment, question, paper, face, pvxbody, community_topic, community_topic_reply } = res.data.data;
                 this.comment.comment_cms.count = comment;
                 this.app.exam_question.count = question;
                 this.app.exam_paper.count = paper;
                 this.app.face.count = face;
                 this.app.body.count = pvxbody;
                 this.cms.community.count = community_topic;
+                this.comment.my_comment.count = community_topic_reply;
             });
         },
         init: function () {

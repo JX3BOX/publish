@@ -114,8 +114,6 @@
 // 公共模块
 import { getLink } from "@jx3box/jx3box-common/js/utils";
 import bbs_types from "@/assets/data/bbs.json";
-import User from "@jx3box/jx3box-common/js/user.js";
-import { bbs } from "@jx3box/jx3box-common/data/post_topics.json";
 
 // 本地模块
 import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";

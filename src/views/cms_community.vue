@@ -29,7 +29,7 @@
                         <img src="../assets/img/works/repo.svg" />
                         <!-- <img v-else src="../assets/img/works/draft.svg" :title="item.post_status | statusFormat" /> -->
                     </i>
-                    <a class="u-title" target="_blank" :href="postLink(item.id)">
+                    <a class="u-title" target="_blank" :href="postLink(item)">
                         <span>{{ item.title || item.content || "无标题" }}</span>
                         <!-- <div class="u-tags">
                             <el-tag type="danger" size="mini" v-if="item.is_top == 1">置顶</el-tag>
@@ -56,8 +56,8 @@
                     </div>
 
                     <el-button-group class="u-action">
-                        <el-button size="mini" icon="el-icon-edit" title="编辑" @click="edit(item.id)"></el-button>
-                        <el-button size="mini" icon="el-icon-delete" title="删除" @click="del(item.id)"></el-button>
+                        <el-button size="mini" icon="el-icon-edit" title="编辑" @click="edit(item)"></el-button>
+                        <el-button size="mini" icon="el-icon-delete" title="删除" @click="del(item)"></el-button>
                     </el-button-group>
                 </li>
             </ul>
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { getMyList, del, getMyReplyList } from "@/service/community.js";
+import { getMyList, del, getMyReplyList, deleteMyReply } from "@/service/community.js";
 import dateFormat from "../utils/dateFormat";
 import statusMap from "@/assets/data/status.json";
 import {pick} from "lodash";
@@ -147,8 +147,18 @@ export default {
             handler: function () {
                 this.page = 1;
                 this.loadPosts();
+                this.$router.push({
+                    query: {
+                        tab: this.activeTab,
+                    },
+                });
             },
         },
+    },
+    mounted() {
+        if (this.$route.query.tab) {
+            this.activeTab = this.$route.query?.tab || "topic";
+        }
     },
     methods: {
         getStatusCn: function (status) {
@@ -189,20 +199,30 @@ export default {
                     });
             }
         },
-        edit: function (id) {
-            location.href = "./#/community/" + id;
+        edit: function (item) {
+            const routeName = this.activeTab == 'topic' ? 'community' : 'community_reply';
+
+            this.$router.push({
+                name: routeName,
+                params: {
+                    id: item.id,
+                },
+            });
         },
-        del: function (id) {
+        del: function (item) {
             this.$alert("确定要删除吗？", "确认信息", {
                 confirmButtonText: "确定",
                 callback: (action) => {
                     if (action == "confirm") {
-                        del(id).then((res) => {
+                        const fn = this.activeTab == 'topic' ? del : deleteMyReply;
+                        fn(item.id).then(() => {
                             this.$message({
                                 type: "success",
                                 message: `删除成功`,
                             });
-                            location.reload();
+
+                            this.page = 1;
+                            this.loadPosts();
                         });
                     }
                 },
@@ -230,8 +250,8 @@ export default {
                 this.data[i].post_status = "publish";
             });
         },
-        postLink: function (id) {
-            return `/community/${id}`;
+        postLink: function (item) {
+            return this.activeTab == 'topic' ? `/community/${item.id}` : `/community/${item.topic_id}`;
         },
         filter: function (o) {
             this.page = 1;

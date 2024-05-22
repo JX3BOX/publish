@@ -24,6 +24,7 @@ const skill = () => import("../post/skill.vue");
 const tool = () => import("../post/tool.vue");
 const bbs = () => import("../post/bbs.vue");
 const community = () => import("../post/community.vue");
+const community_reply = () => import("../post/community_reply.vue");
 // const house = () => import("../post/house.vue");
 const share = () => import("../post/share.vue");
 const notice = () => import("../post/notice.vue");
@@ -150,11 +151,15 @@ const routes = [
         component: bbs,
     },
     // 魔盒论坛
-
     {
         path: "/community/:id?",
         component: community,
         name: "community",
+    },
+    {
+        path: "/community/reply/:id",
+        component: community_reply,
+        name: "community_reply",
     },
     // 公告
     {

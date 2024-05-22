@@ -21,10 +21,29 @@ function pull(id) {
     return $next().get(`${API_PREFIX}/community/discussion/my/topic/item/${id}`);
 }
 
+// =============  我的回帖 =============
+
 // 获取回帖列表
 function getMyReplyList(params) {
     return $next().get(`${API_PREFIX}/community/discussion/my/reply/list`, { params });
 }
+
+// 获取我的回帖
+function getMyReply(id) {
+    return $next().get(`${API_PREFIX}/community/discussion/my/reply/item/${id}`);
+}
+
+// 删除我的回帖
+function deleteMyReply(id) {
+    return $next().delete(`${API_PREFIX}/community/discussion/my/reply/item/${id}`);
+}
+
+// 更新我的回帖
+function updateMyReply(id, data) {
+    return $next().put(`${API_PREFIX}/community/discussion/my/reply/item/${id}`, data);
+}
+
+// =============  我的评论 =============
 
 // 获取评论列表
 function getMyCommentList(params) {
@@ -36,4 +55,5 @@ function deleteMyComment(id) {
     return $next().delete(`${API_PREFIX}/community/discussion/my/comment/item/${id}`);
 }
 
-export { push, getMyList, del, pull, update, getMyReplyList, getMyCommentList, deleteMyComment };
+
+export { push, getMyList, del, pull, update, getMyReplyList, getMyReply, deleteMyReply, updateMyReply, getMyCommentList, deleteMyComment };
