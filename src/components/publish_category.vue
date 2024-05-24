@@ -1,7 +1,7 @@
 <template>
     <div class="m-category-list">
         <span class="u-category">类别</span>
-        <el-radio-group v-model="category">
+        <el-radio-group v-model="category" @input="updateCategory">
             <el-radio border v-for="item in options" :key="item" :label="item">{{ item }}</el-radio>
         </el-radio-group>
     </div>
