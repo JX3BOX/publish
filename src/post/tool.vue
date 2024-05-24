@@ -23,6 +23,10 @@
                     v-if="post.post_subtype == 1 || post.post_subtype == 2"
                     v-model="post.post_meta"
                 ></publish-tool-source>
+                <!-- 作业模式 -->
+                <el-form-item label="扩展" v-if="post.post_subtype == 3">
+                    <el-checkbox v-model="post.homework" :true-label="1" :false-label="0">开启作业模式</el-checkbox>
+                </el-form-item>
             </div>
 
             <!-- 正文 -->
@@ -228,6 +232,9 @@ export default {
 
                 // 阅读权限（0公开，1仅自己，2亲友，3密码，4付费，5粉丝）
                 visible: 0,
+
+                // 作业模式
+                homework: 0,
             },
 
             // 选项
