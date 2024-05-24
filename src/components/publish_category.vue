@@ -64,4 +64,17 @@ export default {
         }
     }
 }
+
+@media screen and (max-width: @phone){
+    .m-category-list {
+        flex-wrap: wrap;
+
+        .el-radio-group {
+            flex: unset;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            margin-top: 10px;
+        }
+    }
+}
 </style>

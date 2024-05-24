@@ -95,7 +95,7 @@ import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
 import { atAuthorMixin } from "@/utils/atAuthorMixin";
 
 export default {
-    name: "bbs",
+    name: "community",
     mixins: [cmsMetaMixin, atAuthorMixin],
     components: {
         Tinymce,
@@ -117,6 +117,7 @@ export default {
             post: {
                 // 文章ID
                 id: "",
+                client: "all",
 
                 // 分类
                 category: "",
@@ -166,6 +167,8 @@ export default {
             this.post.id = id;
             this.loadCommentConfig("community", id);
         }
+
+        this.post.client = "all"
     },
     methods: {
         getIntroduction(str) {
@@ -262,8 +265,6 @@ export default {
     watch: {
         extraImages() {
             if (this.extraImages.length) {
-                //  初始化banner_img
-                console.log("this.post.banner_img", this.post.banner_img);
                 if (!this.post.banner_img) {
                     this.post.banner_img = this.extraImages[0];
                 } else {
@@ -273,7 +274,6 @@ export default {
                     }
                 }
             } else {
-                console.log("this.post.banner_img", this.post.banner_img);
                 // 附图被清空 banner_img 也要去掉
                 this.post.banner_img = "";
             }
