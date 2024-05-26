@@ -138,7 +138,7 @@ import publish_tags from "@/components/publish_tags";
 import publish_guide from "@/components/publish_guide.vue";
 
 // 数据逻辑
-import { push, getTopicBucket } from "@/service/cms.js";
+import { push, getTopicBucket, pushAdmin } from "@/service/cms.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
@@ -280,8 +280,8 @@ export default {
         publish: function (status, skip) {
             this.post.post_status = status;
             this.processing = true;
-
-            return push(...this.data)
+            const fn = this.from === 'admin' ? pushAdmin : push;
+            return fn(...this.data)
                 .then((res) => {
                     let result = res.data.data;
                     return result;

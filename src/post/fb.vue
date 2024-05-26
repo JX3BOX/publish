@@ -256,7 +256,8 @@ export default {
         publish: function (status, skip) {
             this.post.post_status = status;
             this.processing = true;
-            return push(...this.data)
+            const fn = this.from === "admin" ? pushAdmin : push;
+            return fn(...this.data)
                 .then((res) => {
                     let result = res.data.data;
                     this.atUser(result.ID);

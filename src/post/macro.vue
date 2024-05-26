@@ -321,7 +321,9 @@ export default {
                 _post = [data];
             }
 
-            return push(..._post)
+            const fn = this.from === "admin" ? pushAdmin : push;
+
+            return fn(..._post)
                 .then((res) => {
                     let result = res.data.data;
                     syncRedis(result).catch((err) => {

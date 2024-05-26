@@ -6,10 +6,16 @@ export const cmsMetaMixin = {
 
             open_white_list: 0,
             visible_for_self: 0,
+            from: ""
         };
     },
     mounted: function() {
         this.initExtend();
+
+        const from = this.$route.query?.from;
+        if (from) {
+            this.from = from;
+        }
     },
     methods: {
         initExtend() {

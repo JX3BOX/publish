@@ -280,7 +280,9 @@ export default {
                 item.desc = item.desc.replace(/\n{2,}/g, "\n") || "";
             });
 
-            return push(...this.data)
+            const fn = this.from === "admin" ? pushAdmin : push;
+
+            return fn(...this.data)
                 .then((res) => {
                     let result = res.data.data;
                     this.setHasRead();
