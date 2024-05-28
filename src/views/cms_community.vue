@@ -256,7 +256,7 @@ export default {
         getContent(item) {
             const val = item.content
             if (val) {
-                return `回复：${item?.topic?.title}#${item.floor}  ` + val.slice(0, 12) + "...";
+                return `#${item.floor} 回复：${item?.topic?.title}` + val.slice(0, 12) + "...";
             }
             return "";
         }
