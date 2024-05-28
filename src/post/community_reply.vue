@@ -1,6 +1,6 @@
 <template>
     <div class="m-publish-box" v-loading="loading">
-        <publish-header name="论坛回帖"> </publish-header>
+        <publish-header :name="`${getContent(data)}`"> </publish-header>
 
         <el-form label-position="left" label-width="80px">
             <!-- 正文 -->
@@ -81,6 +81,13 @@ export default {
                 .finally(() => {
                     this.processing = false;
                 });
+        },
+        getContent(item) {
+            const val = item?.topic?.title?.slice(0, 30);
+            if (val) {
+                return `回复：${val}`;
+            }
+            return "";
         }
     },
 };

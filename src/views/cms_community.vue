@@ -30,7 +30,8 @@
                         <!-- <img v-else src="../assets/img/works/draft.svg" :title="item.post_status | statusFormat" /> -->
                     </i>
                     <a class="u-title" target="_blank" :href="postLink(item)">
-                        <span>{{ item.title || item.content || "无标题" }}</span>
+                        <span v-if="activeTab == 'topic'">{{ item.title || item.content || "无标题" }}</span>
+                        <span class="u-title_content" v-else v-html="getContent(item)"></span>
                         <!-- <div class="u-tags">
                             <el-tag type="danger" size="mini" v-if="item.is_top == 1">置顶</el-tag>
                             <el-tag type="danger" size="mini" v-if="item.is_star == 1">加精</el-tag>
@@ -147,18 +148,8 @@ export default {
             handler: function () {
                 this.page = 1;
                 this.loadPosts();
-                this.$router.push({
-                    query: {
-                        tab: this.activeTab,
-                    },
-                });
             },
         },
-    },
-    mounted() {
-        if (this.$route.query.tab) {
-            this.activeTab = this.$route.query?.tab || "topic";
-        }
     },
     methods: {
         getStatusCn: function (status) {
@@ -202,12 +193,14 @@ export default {
         edit: function (item) {
             const routeName = this.activeTab == 'topic' ? 'community' : 'community_reply';
 
-            this.$router.push({
+            const path = this.$router.resolve({
                 name: routeName,
                 params: {
                     id: item.id,
                 },
             });
+
+            window.open(path.href, "_blank");
         },
         del: function (item) {
             this.$alert("确定要删除吗？", "确认信息", {
@@ -260,6 +253,13 @@ export default {
         isSimpleType: function (val) {
             return simpleTypes.includes(val);
         },
+        getContent(item) {
+            const val = item.content
+            if (val) {
+                return `回复：${item?.topic?.title}#${item.floor}  ` + val.slice(0, 12) + "...";
+            }
+            return "";
+        }
     },
     filters: {
         dateFormat: function (val) {
@@ -290,6 +290,19 @@ export default {
         .u-tags {
             display: flex;
             gap: 4px;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+
+    .u-title_content {
+        .flex;
+
+        p {
+            margin-left: 5px;
         }
     }
 }
