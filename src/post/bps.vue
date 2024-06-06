@@ -48,6 +48,7 @@
                     :attachmentEnable="true"
                     :resourceEnable="true"
                     v-show="!post.post_mode || post.post_mode == 'tinymce'"
+                    :subtype="post.post_subtype"
                 />
             </div>
 
@@ -256,9 +257,6 @@ export default {
             }
             let _topics = new Set(topics);
             return Array.from(_topics);
-        },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
         },
         isChangelog() {
             return this.post?.topics?.some((item) => {

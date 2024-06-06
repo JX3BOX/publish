@@ -264,9 +264,6 @@ export default {
             if (mount_id) _query = { mount: mount_id };
             return _query;
         },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
-        },
     },
     mounted() {
         const id = this.$route.params.id;

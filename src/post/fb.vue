@@ -223,9 +223,6 @@ export default {
                 return [{ ...this.post, topics: this.topics }];
             }
         },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
-        },
         topics: function () {
             let topics = [];
             if (this.post?.post_meta?.fb_boss) {

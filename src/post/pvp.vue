@@ -237,9 +237,6 @@ export default {
             if (mount_id) _query = { mount: mount_id };
             return _query;
         },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
-        },
     },
     watch: {
         "$route.query": {
