@@ -275,16 +275,16 @@ export default {
             return fn(...this.data)
                 .then((res) => {
                     let result = res.data.data;
-                    this.atUser(result.ID);
+                    this.atUser(result.ID || this.id);
                     this.setHasRead();
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish(result).finally(() => {
-                        this.done(skip, result);
+                    this.afterPublish({...result, ID: result.ID || this.id}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id});
                     });
 
-                    this.setCommentConfig("post", result.ID);
+                    this.setCommentConfig("post", result.ID || this.id);
                 })
                 .finally(() => {
                     this.processing = false;

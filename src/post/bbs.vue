@@ -287,12 +287,12 @@ export default {
                     return result;
                 })
                 .then((result) => {
-                    this.atUser(result.ID);
+                    this.atUser(result.ID || this.id);
                     this.setHasRead();
-                    this.afterPublish(result).finally(() => {
-                        this.done(skip, result);
+                    this.afterPublish({...result, ID: result.ID || this.id}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id});
                     });
-                    this.setCommentConfig('post', result.ID);
+                    this.setCommentConfig('post', result.ID || this.id);
                 })
                 .finally(() => {
                     this.processing = false;
