@@ -323,7 +323,7 @@ export default {
             return fn(..._post)
                 .then((res) => {
                     let result = res.data.data;
-                    syncRedis(result).catch((err) => {
+                    syncRedis({...result, ...data}).catch((err) => {
                         console.log("[Redis同步作业失败]", err);
                     });
                     this.atUser(result.ID || this.id);
