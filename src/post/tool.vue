@@ -140,7 +140,7 @@ import publish_tool_source from "@/components/publish_tool_source.vue";
 import publish_guide from "@/components/publish_guide.vue";
 
 // 数据逻辑
-import { push, pull } from "@/service/cms.js";
+import { push, pushAdmin } from "@/service/cms.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";

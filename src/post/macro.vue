@@ -148,7 +148,7 @@ import pz_haste from "@/components/pz_haste.vue";
 import publish_guide from "@/components/publish_guide.vue";
 
 // 数据逻辑
-import { push, pull, getBreadCrumb } from "@/service/cms.js";
+import { push, pushAdmin, getBreadCrumb } from "@/service/cms.js";
 import { syncRedis } from "@/service/macro.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";

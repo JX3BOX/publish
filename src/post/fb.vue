@@ -123,7 +123,7 @@ import publish_at_authors from "@/components/publish_at_authors.vue";
 import publish_guide from "@/components/publish_guide.vue";
 
 // 数据逻辑
-import { push, pull } from "@/service/cms.js";
+import { push, pushAdmin } from "@/service/cms.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
