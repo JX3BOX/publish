@@ -218,9 +218,9 @@ export default {
         },
         data: function () {
             if (this.id) {
-                return [this.id, { ...this.post, topics: this.topics }];
+                return [this.id, { ...this.post, topics: this.topics, post_content: this.removeBase64Img(this.post.post_content) }];
             } else {
-                return [{ ...this.post, topics: this.topics }];
+                return [{ ...this.post, topics: this.topics, post_content: this.removeBase64Img(this.post.post_content) }];
             }
         },
         topics: function () {

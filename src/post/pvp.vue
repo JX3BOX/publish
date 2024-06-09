@@ -226,9 +226,9 @@ export default {
         },
         data: function () {
             if (this.id) {
-                return [this.id, this.post];
+                return [this.id, {...this.post, post_content: this.removeBase64Img(this.post.post_content)}];
             } else {
-                return [this.post];
+                return [{...this.post, post_content: this.removeBase64Img(this.post.post_content)}];
             }
         },
         pz_query: function () {

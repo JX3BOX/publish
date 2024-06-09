@@ -243,9 +243,9 @@ export default {
         data: function () {
             const topics = [...new Set([...this.post.topics, ...this.buckets])];
             if (this.id) {
-                return [this.id, { ...this.post, topics }];
+                return [this.id, { ...this.post, topics, post_content: this.removeBase64Img(this.post.post_content) }];
             } else {
-                return [{ ...this.post, topics }];
+                return [{ ...this.post, topics, post_content: this.removeBase64Img(this.post.post_content) }];
             }
         },
     },

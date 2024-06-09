@@ -36,6 +36,11 @@ export const cmsMetaMixin = {
             setCommentConfig(category, id, this.open_white_list ? 'open': 'close');
             setCommentVisible(category, id, this.visible_for_self ? 'open': 'close');
         },
+        // 去除post_content中的base64图片
+        removeBase64Img(content) {
+            // img左右可能是转义符 &lt;img&gt; 或者 <img>
+            return content.replace(/(&lt;|<)img[^>]*?src="data:image[^>]*?(&gt;|>)/gi, "");
+        },
     },
     created: function() {
         // 根据访问域名设置默认客户端版本
