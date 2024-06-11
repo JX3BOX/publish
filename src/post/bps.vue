@@ -298,8 +298,8 @@ export default {
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish({...result, ID: result.ID || this.id}).finally(() => {
-                        this.done(skip, {...result, ID: result.ID || this.id});
+                    this.afterPublish({...result, ID: result.ID || this.id, post_type: 'bps'}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id, post_type: 'bps'});
                     });
                     this.setCommentConfig("post", result.ID || this.id);
                 })

@@ -331,8 +331,8 @@ export default {
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish({...result, ID: result.ID || this.id}).finally(() => {
-                        this.done(skip, {...result, ID: result.ID || this.id});
+                    this.afterPublish({...result, ID: result.ID || this.id, post_type: 'macro'}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id, post_type: 'macro'});
                     });
 
                     this.setCommentConfig("post", result.ID || this.id);

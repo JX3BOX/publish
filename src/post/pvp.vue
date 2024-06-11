@@ -286,8 +286,8 @@ export default {
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish({...result, ID: result.ID || this.id}).finally(() => {
-                        this.done(skip, {...result, ID: result.ID || this.id});
+                    this.afterPublish({...result, ID: result.ID || this.id, post_type: "pvp"}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id, post_type: "pvp"});
                     });
                     this.setCommentConfig("post", result.ID || this.id);
                 })
