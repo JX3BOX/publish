@@ -55,5 +55,16 @@ function deleteMyComment(id) {
     return $next().delete(`${API_PREFIX}/community/discussion/my/comment/item/${id}`);
 }
 
-
-export { push, getMyList, del, pull, update, getMyReplyList, getMyReply, deleteMyReply, updateMyReply, getMyCommentList, deleteMyComment };
+export {
+    push,
+    getMyList,
+    del,
+    pull,
+    update,
+    getMyReplyList,
+    getMyReply,
+    deleteMyReply,
+    updateMyReply,
+    getMyCommentList,
+    deleteMyComment,
+};

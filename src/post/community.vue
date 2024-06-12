@@ -18,6 +18,26 @@
                 <publish-category v-model="post.category" :options="tags"></publish-category>
             </div>
 
+            <div class="m-publish-info m-publish-extraimg" v-if="skins.length">
+                <el-divider content-position="left">卡片皮肤</el-divider>
+                <div class="u-imgs u-skin-imgs">
+                    <div
+                        @click="setSkin(item)"
+                        :class="`u-imgs-item u-skin ${post.decoration_id === item.id && 'active'}`"
+                        v-for="(item, i) in skins"
+                        :key="i"
+                        title="点击使用卡片皮肤，再次点击取消选择"
+                    >
+                        <el-image :src="item.url" fit="cover" />
+                        <div class="u-mark">已选择</div>
+                        <div class="u-amount">
+                            剩余数量：{{ item.amount }}
+                            <a @click="goShopping" v-if="item.amount <= 0">前往购买</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 正文 -->
             <div class="m-publish-content">
                 <el-divider content-position="left">正文</el-divider>
@@ -77,10 +97,9 @@
 </template>
 
 <script>
+import { __imgPath } from "@jx3box/jx3box-common/data/jx3box.json";
 // 公共模块
 import community_types from "@/assets/data/community.json";
-
-import User from "@jx3box/jx3box-common/js/user.js";
 
 import { push, pull, update } from "@/service/community.js";
 
@@ -99,6 +118,7 @@ import publish_banner from "@/components/publish_banner";
 import { getTopicBucket } from "@/service/cms.js";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
 import { atAuthorMixin } from "@/utils/atAuthorMixin";
+import { getDecoration } from "@jx3box/jx3box-common-ui/service/cms";
 
 export default {
     name: "community",
@@ -115,6 +135,7 @@ export default {
     },
     data: function () {
         return {
+            skins: [],
             // 加载状态
             loading: false,
             // 发布状态
@@ -125,7 +146,8 @@ export default {
                 // 文章ID
                 id: "",
                 client: "all",
-
+                // 皮肤id
+                decoration_id: "",
                 // 分类
                 category: "",
                 // 标题
@@ -166,6 +188,7 @@ export default {
         },
     },
     mounted() {
+        this.getDecoration();
         this.getTopicBucket();
         const id = this.$route.params.id;
         if (id) {
@@ -176,6 +199,41 @@ export default {
         this.post.client = "all";
     },
     methods: {
+        goShopping(e) {
+            window.open("/vip/mall/list?category=virtual&sub_category=palu", "_blank");
+            e.preventDefault();
+            e.stopPropagation();
+        },
+        setSkin(data) {
+            if (data.amount <= 0) {
+                this.$message({
+                    message: "该皮肤已经被使用完了",
+                    type: "warning",
+                });
+                return;
+            }
+            if (this.post.decoration_id == data.id) {
+                this.post.decoration_id = "";
+            } else {
+                this.post.decoration_id = data.id;
+            }
+        },
+        getDecoration() {
+            getDecoration({ type: "palu" })
+                .then((res) => {
+                    this.skins = res.data.data.map((item) => {
+                        return {
+                            val: item.val,
+                            id: item.id,
+                            amount: item.amount,
+                            url: __imgPath + `decoration/palu/${item.val}.png`,
+                        };
+                    });
+                })
+                .catch(() => {
+                    this.skins = [];
+                });
+        },
         getIntroduction(str) {
             // 使用正则表达式匹配HTML标签并将其替换为空字符串
             const withoutTags = str.replace(/<[^>]*>|\n|&nbsp;| &nbsp;/g, "");
@@ -335,6 +393,22 @@ export default {
             background-color: #0366d6;
             color: white;
             border-radius: 4px;
+        }
+    }
+    .u-skin-imgs {
+        overflow-x: scroll;
+        padding-bottom: 20px;
+        .u-imgs-item {
+            position: relative;
+            min-width: 50px;
+            height: 100px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+        }
+        .u-amount {
+            font-size: 14px;
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
         }
     }
 }
