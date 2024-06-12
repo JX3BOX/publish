@@ -180,6 +180,7 @@ export default {
                 ...this.post,
                 category: this.post.category,
                 collection_id: this.post.collection_id || undefined,
+                decoration_id: this.post.decoration_id || undefined,
                 extra_images: this.extraImages,
                 introduction: this.getIntroduction(this.post.content),
             };
