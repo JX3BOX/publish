@@ -19,7 +19,18 @@
             </div>
 
             <div class="m-publish-info m-publish-extraimg">
-                <el-divider content-position="left">装备魔卡</el-divider>
+                <el-divider content-position="left"
+                    >魔卡
+                    <el-tooltip class="box-item" effect="dark" content="使用魔卡让你的贴贴闪闪发光!" placement="top">
+                        <i class="el-icon-question"></i>
+                    </el-tooltip>
+                    <a
+                        class="u-buy el-button el-button--primary el-button--mini is-round"
+                        href="/vip/mall/list?category=virtual&sub_category=palu"
+                        target="_blank"
+                        ><i class="el-icon-shopping-cart-full"></i> 兑换魔卡</a
+                    >
+                </el-divider>
                 <div class="u-imgs u-skin-imgs" v-if="skins.length">
                     <div
                         @click="setSkin(item)"
@@ -29,11 +40,13 @@
                         title="点击使用卡片皮肤，再次点击取消选择"
                     >
                         <el-image :src="item.url" fit="fill" />
-                        <div class="u-mark">已选择</div>
-                        <div class="u-amount">剩余数量：{{ item.amount }}</div>
+                        <div class="u-mark"><i class="el-icon-check"></i> 已选择</div>
+                        <div class="u-amount">数量 : {{ item.amount }}</div>
                     </div>
                 </div>
-                <el-button type="primary" @click="goShopping" v-else>前往购买</el-button>
+                <div class="u-null">
+                    你还没有任何魔卡，<a href="/vip/mall/list?category=virtual&sub_category=palu" target="_blank">点击前往</a>使用积分兑换。
+                </div>
             </div>
 
             <!-- 正文 -->
@@ -356,6 +369,17 @@ export default {
 
 <style lang="less">
 .m-publish-extraimg {
+    .u-buy {
+        margin-left: 10px;
+        padding: 5px 8px;
+        background-color: #444;
+        border-color: #444;
+    }
+    .u-null{
+        .fz(12px);
+        color:#999;
+        a{text-decoration: underline;}
+    }
     .u-imgs {
         display: flex;
         overflow-x: auto;
@@ -414,10 +438,13 @@ export default {
             }
         }
         .u-amount {
-            font-size: 14px;
+            font-size: 12px;
             position: absolute;
-            right: 4px;
-            bottom: 4px;
+            .rb(0);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 2px 2px 2px 6px;
+            border-bottom-right-radius: 2px;
         }
     }
 }
