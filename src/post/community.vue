@@ -46,11 +46,16 @@
                         v-for="(item, i) in extraImages"
                         :key="i"
                         @click="setBannerIndex(item)"
+                        title="点击设置封面"
                     >
                         <el-image :src="item" fit="cover" style="width: 148px; height: 148px" />
                         <div class="u-mark">封面</div>
                     </div>
                 </div>
+            </div>
+
+            <div class="m-publish-other">
+                <publish-banner v-model="post.banner_img"></publish-banner>
             </div>
 
             <div class="m-publish-doc">
@@ -88,6 +93,7 @@ import publish_collection from "@/components/publish_collection";
 import publish_revision from "@/components/publish_revision.vue";
 import publish_category from "@/components/publish_category.vue";
 import publish_client from "@/components/publish_client.vue";
+import publish_banner from "@/components/publish_banner";
 
 // 数据逻辑
 import { getTopicBucket } from "@/service/cms.js";
@@ -95,7 +101,7 @@ import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
 import { atAuthorMixin } from "@/utils/atAuthorMixin";
 
 export default {
-    name: "bbs",
+    name: "community",
     mixins: [cmsMetaMixin, atAuthorMixin],
     components: {
         Tinymce,
@@ -105,6 +111,7 @@ export default {
         "publish-revision": publish_revision,
         "publish-category": publish_category,
         "publish-client": publish_client,
+        "publish-banner": publish_banner,
     },
     data: function () {
         return {
@@ -117,6 +124,7 @@ export default {
             post: {
                 // 文章ID
                 id: "",
+                client: "all",
 
                 // 分类
                 category: "",
@@ -156,9 +164,6 @@ export default {
                 introduction: this.getIntroduction(this.post.content),
             };
         },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
-        },
     },
     mounted() {
         this.getTopicBucket();
@@ -167,6 +172,8 @@ export default {
             this.post.id = id;
             this.loadCommentConfig("community", id);
         }
+
+        this.post.client = "all";
     },
     methods: {
         getIntroduction(str) {
@@ -177,7 +184,12 @@ export default {
             return withoutTags.slice(0, 200);
         },
         setBannerIndex(img) {
-            this.post.banner_img = img;
+            // 设置封面
+            if (this.post.banner_img === img) {
+                this.post.banner_img = "";
+            } else {
+                this.post.banner_img = img;
+            }
         },
         // 初始化
         init: function () {
@@ -261,23 +273,23 @@ export default {
         },
     },
     watch: {
-        extraImages() {
-            if (this.extraImages.length) {
-                //  初始化banner_img
-                console.log("this.post.banner_img", this.post.banner_img);
-                if (!this.post.banner_img) {
-                    this.post.banner_img = this.extraImages[0];
-                } else {
-                    const findData = this.extraImages.find((item) => item === this.post.banner_img);
-                    if (!findData) {
+        extraImages: {
+            deep: true,
+            handler() {
+                if (this.extraImages.length) {
+                    if (!this.post.banner_img) {
                         this.post.banner_img = this.extraImages[0];
+                    } else {
+                        const findData = this.extraImages.find((item) => item === this.post.banner_img);
+                        if (!findData) {
+                            this.post.banner_img = this.extraImages[0];
+                        }
                     }
+                } else {
+                    // 附图被清空 banner_img 也要去掉
+                    this.post.banner_img = "";
                 }
-            } else {
-                console.log("this.post.banner_img", this.post.banner_img);
-                // 附图被清空 banner_img 也要去掉
-                this.post.banner_img = "";
-            }
+            },
         },
     },
 };

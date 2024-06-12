@@ -88,7 +88,8 @@
 
             <!-- 其它 -->
             <div class="m-publish-other" v-if="isSuperAuthor">
-                <publish-banner v-model="post.post_banner"></publish-banner>
+                <cms-banner v-model="post.post_banner"></cms-banner>
+                <publish-design-task :data="post"></publish-design-task>
             </div>
 
             <div class="m-publish-doc">
@@ -147,7 +148,7 @@ import pz_haste from "@/components/pz_haste.vue";
 import publish_guide from "@/components/publish_guide.vue";
 
 // 数据逻辑
-import { push, pull, getBreadCrumb } from "@/service/cms.js";
+import { push, pushAdmin, getBreadCrumb } from "@/service/cms.js";
 import { syncRedis } from "@/service/macro.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";
@@ -170,7 +171,7 @@ export default {
         "publish-macro": publish_macro,
         "publish-collection": publish_collection,
         "publish-collection-collapse": publish_collection_collapse,
-        "publish-banner": publish_banner,
+        // "publish-banner": publish_banner,
         "publish-comment": publish_comment,
         "publish-gift": publish_gift,
         "publish-visible": publish_visible,
@@ -263,9 +264,6 @@ export default {
             if (mount_id) _query = { mount: mount_id };
             return _query;
         },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
-        },
     },
     mounted() {
         const id = this.$route.params.id;
@@ -320,22 +318,24 @@ export default {
                 _post = [data];
             }
 
-            return push(..._post)
+            const fn = this.from === "admin" ? pushAdmin : push;
+
+            return fn(..._post)
                 .then((res) => {
                     let result = res.data.data;
-                    syncRedis(result).catch((err) => {
+                    syncRedis({...result, ...data}).catch((err) => {
                         console.log("[Redis同步作业失败]", err);
                     });
-                    this.atUser(result.ID);
+                    this.atUser(result.ID || this.id);
                     this.setHasRead();
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish(result).finally(() => {
-                        this.done(skip, result);
+                    this.afterPublish({...result, ID: result.ID || this.id, post_type: 'macro'}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id, post_type: 'macro'});
                     });
 
-                    this.setCommentConfig("post", result.ID);
+                    this.setCommentConfig("post", result.ID || this.id);
                 })
                 .finally(() => {
                     this.processing = false;

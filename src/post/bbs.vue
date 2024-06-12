@@ -81,8 +81,9 @@
             </div>
 
             <!-- 其它 -->
-            <div class="m-publish-other">
-                <publish-banner v-model="post.post_banner"></publish-banner>
+            <div class="m-publish-other" v-if="isSuperAuthor">
+                <cms-banner v-model="post.post_banner"></cms-banner>
+                <publish-design-task :data="post"></publish-design-task>
             </div>
 
             <div class="m-publish-doc">
@@ -113,8 +114,6 @@
 // 公共模块
 import { getLink } from "@jx3box/jx3box-common/js/utils";
 import bbs_types from "@/assets/data/bbs.json";
-import User from "@jx3box/jx3box-common/js/user.js";
-import { bbs } from "@jx3box/jx3box-common/data/post_topics.json";
 
 // 本地模块
 import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";
@@ -139,7 +138,7 @@ import publish_tags from "@/components/publish_tags";
 import publish_guide from "@/components/publish_guide.vue";
 
 // 数据逻辑
-import { push, getTopicBucket } from "@/service/cms.js";
+import { push, getTopicBucket, pushAdmin } from "@/service/cms.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
@@ -158,7 +157,7 @@ export default {
         "publish-excerpt": publish_excerpt,
         "publish-collection": publish_collection,
         "publish-collection-collapse": publish_collection_collapse,
-        "publish-banner": publish_banner,
+        // "publish-banner": publish_banner,
         "publish-comment": publish_comment,
         "publish-gift": publish_gift,
         "publish-visible": publish_visible,
@@ -244,13 +243,10 @@ export default {
         data: function () {
             const topics = [...new Set([...this.post.topics, ...this.buckets])];
             if (this.id) {
-                return [this.id, { ...this.post, topics }];
+                return [this.id, { ...this.post, topics, post_content: this.removeBase64Img(this.post.post_content) }];
             } else {
-                return [{ ...this.post, topics }];
+                return [{ ...this.post, topics, post_content: this.removeBase64Img(this.post.post_content) }];
             }
-        },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
         },
     },
     mounted() {
@@ -284,19 +280,19 @@ export default {
         publish: function (status, skip) {
             this.post.post_status = status;
             this.processing = true;
-
-            return push(...this.data)
+            const fn = this.from === 'admin' ? pushAdmin : push;
+            return fn(...this.data)
                 .then((res) => {
                     let result = res.data.data;
                     return result;
                 })
                 .then((result) => {
-                    this.atUser(result.ID);
+                    this.atUser(result.ID || this.id);
                     this.setHasRead();
-                    this.afterPublish(result).finally(() => {
-                        this.done(skip, result);
+                    this.afterPublish({...result, ID: result.ID || this.id, post_type: "bbs"}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id, post_type: "bbs"});
                     });
-                    this.setCommentConfig('post', result.ID);
+                    this.setCommentConfig('post', result.ID || this.id);
                 })
                 .finally(() => {
                     this.processing = false;

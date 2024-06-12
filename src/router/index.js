@@ -24,6 +24,7 @@ const skill = () => import("../post/skill.vue");
 const tool = () => import("../post/tool.vue");
 const bbs = () => import("../post/bbs.vue");
 const community = () => import("../post/community.vue");
+const community_reply = () => import("../post/community_reply.vue");
 // const house = () => import("../post/house.vue");
 const share = () => import("../post/share.vue");
 const notice = () => import("../post/notice.vue");
@@ -64,6 +65,7 @@ const bucket_face = () => import("../bucket/face.vue");
 const bucket_body = () => import("../bucket/body.vue");
 
 const cmsCommunity = () => import("../views/cms_community.vue");
+const community_comment = () => import("../views/community_comment.vue");
 
 Vue.use(VueRouter);
 
@@ -149,11 +151,15 @@ const routes = [
         component: bbs,
     },
     // 魔盒论坛
-
     {
         path: "/community/:id?",
         component: community,
         name: "community",
+    },
+    {
+        path: "/community/reply/:id",
+        component: community_reply,
+        name: "community_reply",
     },
     // 公告
     {
@@ -316,6 +322,10 @@ const routes = [
     {
         path: "/comment/feedback",
         component: feedback,
+    },
+    {
+        path: "/comment/community",
+        component: community_comment,
     },
 ];
 

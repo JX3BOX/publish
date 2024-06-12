@@ -49,8 +49,9 @@
             </div>
 
             <!-- 其它 -->
-            <div class="m-publish-other">
-                <publish-banner v-model="post.post_banner"></publish-banner>
+            <div class="m-publish-other" v-if="isSuperAuthor">
+                <cms-banner v-model="post.post_banner"></cms-banner>
+                <publish-design-task :data="post"></publish-design-task>
             </div>
 
             <!-- 按钮 -->
@@ -99,7 +100,7 @@ export default {
         "publish-client": publish_client,
         "publish-excerpt": publish_excerpt,
         // "publish-collection": publish_collection,
-        "publish-banner": publish_banner,
+        // "publish-banner": publish_banner,
         "publish-comment": publish_comment,
         "publish-gift": publish_gift,
         "publish-visible": publish_visible,

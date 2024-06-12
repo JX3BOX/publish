@@ -14,6 +14,11 @@ function push(kw1, kw2) {
     }
 }
 
+// 管理发布
+function pushAdmin(kw1, kw2) {
+    return $cms().put(`/api/cms/manage/post/${kw1}`, kw2);
+}
+
 // 删除
 function del(id) {
     return $cms().delete(`/api/cms/post/${id}`);
@@ -85,4 +90,9 @@ function getConfig(key){
     });
 }
 
-export { pull, push, del, getMyPostsCount, getMyPosts, getAllPosts, upload, getBreadCrumb, getPostMeta, setPostMeta, getChangelog, getHasteRecommend, getTopicBucket, getConfig };
+// 获取design_task
+function getDesignTask(params){
+    return $cms().get(`/api/cms/design/task/log`, {params});
+}
+
+export { pull, push, del, getMyPostsCount, getMyPosts, getAllPosts, upload, getBreadCrumb, getPostMeta, setPostMeta, getChangelog, getHasteRecommend, getTopicBucket, getConfig, getDesignTask, pushAdmin };

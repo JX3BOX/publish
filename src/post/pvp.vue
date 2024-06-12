@@ -64,7 +64,8 @@
 
             <!-- 其它 -->
             <div class="m-publish-other" v-if="isSuperAuthor">
-                <publish-banner v-model="post.post_banner"></publish-banner>
+                <cms-banner v-model="post.post_banner"></cms-banner>
+                <publish-design-task :data="post"></publish-design-task>
             </div>
 
             <div class="m-publish-doc">
@@ -117,7 +118,7 @@ import publish_guide from "@/components/publish_guide.vue";
 import publish_mix_subtype from "@/components/publish_mix_subtype.vue";
 
 // 数据逻辑
-import { push } from "@/service/cms.js";
+import { push, pushAdmin } from "@/service/cms.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
@@ -135,7 +136,7 @@ export default {
         "publish-zlp": publish_zlp,
         "publish-xf": publish_xf,
         "publish-pvp": publish_pvp,
-        "publish-banner": publish_banner,
+        // "publish-banner": publish_banner,
         "publish-comment": publish_comment,
         "publish-visible": publish_visible,
         "publish-authors": publish_authors,
@@ -225,9 +226,9 @@ export default {
         },
         data: function () {
             if (this.id) {
-                return [this.id, this.post];
+                return [this.id, {...this.post, post_content: this.removeBase64Img(this.post.post_content)}];
             } else {
-                return [this.post];
+                return [{...this.post, post_content: this.removeBase64Img(this.post.post_content)}];
             }
         },
         pz_query: function () {
@@ -235,9 +236,6 @@ export default {
             let _query = {};
             if (mount_id) _query = { mount: mount_id };
             return _query;
-        },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
         },
     },
     watch: {
@@ -279,17 +277,19 @@ export default {
                 item.desc = item.desc.replace(/\n{2,}/g, "\n") || "";
             });
 
-            return push(...this.data)
+            const fn = this.from === "admin" ? pushAdmin : push;
+
+            return fn(...this.data)
                 .then((res) => {
                     let result = res.data.data;
                     this.setHasRead();
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish(result).finally(() => {
-                        this.done(skip, result);
+                    this.afterPublish({...result, ID: result.ID || this.id, post_type: "pvp"}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id, post_type: "pvp"});
                     });
-                    this.setCommentConfig("post", result.ID);
+                    this.setCommentConfig("post", result.ID || this.id);
                 })
                 .finally(() => {
                     this.processing = false;

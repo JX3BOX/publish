@@ -1,7 +1,7 @@
 <template>
     <div class="m-publish-banner">
         <el-divider content-position="left">海报</el-divider>
-        <uploadImage v-model="banner" :info="info" :max-size="30" :size="size"></uploadImage>
+        <uploadImage v-model="banner" :info="info" :max-size="30" :size="bannerSize"></uploadImage>
     </div>
 </template>
 
@@ -11,7 +11,7 @@ import uploadImage from '@jx3box/jx3box-common-ui/src/upload/upload_banner.vue'
 export default {
     name: "post_banner",
     components: {
-        uploadImage
+        uploadImage,
     },
     props: {
         data: {
@@ -24,7 +24,11 @@ export default {
         },
         info: {
             type: String,
-            default: "非必选。首页海报尺寸1600*280（推荐3200*560支持高分屏），最大30M。",
+            default: "非必选，最大30M。",
+        },
+        isCms: {
+            type: Boolean,
+            default: false,
         },
     },
     data() {
@@ -44,6 +48,11 @@ export default {
             this.$emit("update", newval);
         },
     },
+    computed: {
+        bannerSize() {
+            return this.isCms ? this.size?.map((item) => item * 2) : this.size
+        },
+    }
 };
 </script>
 
@@ -52,9 +61,9 @@ export default {
     .u-tip{
         padding:5px 15px;
     }
-    img {
-        max-width: 180px;
-    }
+    // img {
+    //     max-width: 180px;
+    // }
     .avatar-uploader{
         .mt(10px);
     }

@@ -2,10 +2,18 @@ import { atAuthors } from "@/service/pay.js";
 import User from "@jx3box/jx3box-common/js/user";
 
 export const atAuthorMixin = {
+    data() {
+        return {
+            isSuperAuthor: false
+        }
+    },
     computed: {
         userInfo() {
             return User.getInfo();
         }
+    },
+    async mounted() {
+        this.isSuperAuthor = await User.isSuperAuthor();
     },
     methods: {
         // at其他用户

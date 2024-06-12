@@ -1,7 +1,7 @@
 <template>
     <div class="m-category-list">
         <span class="u-category">类别</span>
-        <el-radio-group v-model="category" @change="updateCategory">
+        <el-radio-group v-model="category" @input="updateCategory">
             <el-radio border v-for="item in options" :key="item" :label="item">{{ item }}</el-radio>
         </el-radio-group>
     </div>
@@ -61,6 +61,19 @@ export default {
         .el-radio {
             .w(120px);
             .mb(10px);
+        }
+    }
+}
+
+@media screen and (max-width: @phone) {
+    .m-category-list {
+        flex-wrap: wrap;
+
+        .el-radio-group {
+            flex: unset;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            margin-top: 10px;
         }
     }
 }

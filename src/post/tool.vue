@@ -23,6 +23,10 @@
                     v-if="post.post_subtype == 1 || post.post_subtype == 2"
                     v-model="post.post_meta"
                 ></publish-tool-source>
+                <!-- 作业模式 -->
+                <el-form-item label="扩展" v-if="post.post_subtype == 3">
+                    <el-checkbox v-model="post.homework" :true-label="1" :false-label="0">开启作业模式</el-checkbox>
+                </el-form-item>
             </div>
 
             <!-- 正文 -->
@@ -78,8 +82,9 @@
             </div>
 
             <!-- 其它 -->
-            <div class="m-publish-other">
-                <publish-banner v-model="post.post_banner"></publish-banner>
+            <div class="m-publish-other" v-if="isSuperAuthor">
+                <cms-banner v-model="post.post_banner"></cms-banner>
+                <publish-design-task :data="post"></publish-design-task>
             </div>
 
             <div class="m-publish-doc">
@@ -135,7 +140,7 @@ import publish_tool_source from "@/components/publish_tool_source.vue";
 import publish_guide from "@/components/publish_guide.vue";
 
 // 数据逻辑
-import { push, pull } from "@/service/cms.js";
+import { push, pushAdmin } from "@/service/cms.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
@@ -154,7 +159,7 @@ export default {
         "publish-excerpt": publish_excerpt,
         "publish-collection": publish_collection,
         "publish-collection-collapse": publish_collection_collapse,
-        "publish-banner": publish_banner,
+        // "publish-banner": publish_banner,
         "publish-comment": publish_comment,
         "publish-gift": publish_gift,
         "publish-visible": publish_visible,
@@ -227,6 +232,9 @@ export default {
 
                 // 阅读权限（0公开，1仅自己，2亲友，3密码，4付费，5粉丝）
                 visible: 0,
+
+                // 作业模式
+                homework: 0,
             },
 
             // 选项
@@ -239,13 +247,10 @@ export default {
         },
         data: function () {
             if (this.id) {
-                return [this.id, this.post];
+                return [this.id, {...this.post, post_content: this.removeBase64Img(this.post.post_content)}];
             } else {
-                return [this.post];
+                return [{...this.post, post_content: this.removeBase64Img(this.post.post_content)}];
             }
-        },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
         },
     },
     mounted() {
@@ -266,19 +271,20 @@ export default {
         publish: function (status, skip) {
             this.post.post_status = status;
             this.processing = true;
-            return push(...this.data)
+            const fn = this.from === "admin" ? pushAdmin : push;
+            return fn(...this.data)
                 .then((res) => {
                     let result = res.data.data;
-                    this.atUser(result.ID);
+                    this.atUser(result.ID || this.id);
                     this.setHasRead();
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish(result).finally(() => {
-                        this.done(skip, result);
+                    this.afterPublish({...result, ID: result.ID || this.id, post_type: "tool"}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id, post_type: "tool"});
                     });
 
-                    this.setCommentConfig("post", result.ID);
+                    this.setCommentConfig("post", result.ID || this.id);
                 })
                 .finally(() => {
                     this.processing = false;

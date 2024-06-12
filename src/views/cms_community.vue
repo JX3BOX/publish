@@ -7,12 +7,17 @@
             </a>
         </div>
 
+        <el-tabs v-model="activeTab">
+            <el-tab-pane label="主题" name="topic"></el-tab-pane>
+            <el-tab-pane label="回帖" name="reply"></el-tab-pane>
+        </el-tabs>
+
         <el-input class="m-dashboard-work-search" placeholder="请输入搜索内容" v-model="search">
-            <span slot="prepend">标题</span>
+            <span slot="prepend">关键词</span>
             <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
 
-        <div class="m-dashboard-work-filter">
+        <div class="m-dashboard-work-filter" v-if="activeTab == 'topic'">
             <clientBy class="u-client" @filter="filter" :showWujie="showWujie" />
             <!-- <orderBy class="u-order" @filter="filter" /> -->
         </div>
@@ -24,13 +29,14 @@
                         <img src="../assets/img/works/repo.svg" />
                         <!-- <img v-else src="../assets/img/works/draft.svg" :title="item.post_status | statusFormat" /> -->
                     </i>
-                    <a class="u-title" target="_blank" :href="postLink(item.id)">
-                        <span>{{ item.title || "无标题" }}</span>
-                        <div class="u-tags">
+                    <a class="u-title" target="_blank" :href="postLink(item)">
+                        <span v-if="activeTab == 'topic'">{{ item.title || item.content || "无标题" }}</span>
+                        <span class="u-title_content" v-else v-html="getContent(item)"></span>
+                        <!-- <div class="u-tags">
                             <el-tag type="danger" size="mini" v-if="item.is_top == 1">置顶</el-tag>
                             <el-tag type="danger" size="mini" v-if="item.is_star == 1">加精</el-tag>
                             <el-tag type="danger" size="mini" v-if="item.is_hight == 1">高亮</el-tag>
-                        </div>
+                        </div> -->
                     </a>
                     <div class="u-desc">
                         <time class="u-desc-subitem">
@@ -51,8 +57,8 @@
                     </div>
 
                     <el-button-group class="u-action">
-                        <el-button size="mini" icon="el-icon-edit" title="编辑" @click="edit(item.id)"></el-button>
-                        <el-button size="mini" icon="el-icon-delete" title="删除" @click="del(item.id)"></el-button>
+                        <el-button size="mini" icon="el-icon-edit" title="编辑" @click="edit(item)"></el-button>
+                        <el-button size="mini" icon="el-icon-delete" title="删除" @click="del(item)"></el-button>
                     </el-button-group>
                 </li>
             </ul>
@@ -78,9 +84,10 @@
 </template>
 
 <script>
-import { getMyList, del } from "@/service/community.js";
+import { getMyList, del, getMyReplyList, deleteMyReply } from "@/service/community.js";
 import dateFormat from "../utils/dateFormat";
 import statusMap from "@/assets/data/status.json";
+import {pick} from "lodash";
 export default {
     name: "work",
     props: [],
@@ -96,6 +103,8 @@ export default {
             client: "",
             search: "",
             statusMap,
+
+            activeTab: "topic",
         };
     },
     computed: {
@@ -105,7 +114,6 @@ export default {
         params: function () {
             return {
                 type: this.type,
-                per: this.per,
                 title: this.search || undefined,
                 // order: this.order,
                 pageSize: this.per,
@@ -135,6 +143,13 @@ export default {
                 this.loadPosts();
             },
         },
+        activeTab: {
+            immediate: true,
+            handler: function () {
+                this.page = 1;
+                this.loadPosts();
+            },
+        },
     },
     methods: {
         getStatusCn: function (status) {
@@ -152,29 +167,55 @@ export default {
         },
         loadPosts: function () {
             this.loading = true;
-            getMyList(this.params)
-                .then((res) => {
-                    this.data = res.data.data.list;
-                    this.total = res.data.data.page.total;
-                })
-                .finally(() => {
-                    this.loading = false;
-                });
+            this.data = [];
+            if (this.activeTab == 'topic') {
+                getMyList(this.params)
+                    .then((res) => {
+                        this.data = res.data.data.list;
+                        this.total = res.data.data.page.total;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
+            } else {
+                const params = pick(this.params, ["pageSize", "index"]);
+                this.search && (params.content = this.search);
+                getMyReplyList(params)
+                    .then((res) => {
+                        this.data = res.data.data.list;
+                        this.total = res.data.data.page.total;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
+            }
         },
-        edit: function (id) {
-            location.href = "./#/community/" + id;
+        edit: function (item) {
+            const routeName = this.activeTab == 'topic' ? 'community' : 'community_reply';
+
+            const path = this.$router.resolve({
+                name: routeName,
+                params: {
+                    id: item.id,
+                },
+            });
+
+            window.open(path.href, "_blank");
         },
-        del: function (id) {
+        del: function (item) {
             this.$alert("确定要删除吗？", "确认信息", {
                 confirmButtonText: "确定",
                 callback: (action) => {
                     if (action == "confirm") {
-                        del(id).then((res) => {
+                        const fn = this.activeTab == 'topic' ? del : deleteMyReply;
+                        fn(item.id).then(() => {
                             this.$message({
                                 type: "success",
                                 message: `删除成功`,
                             });
-                            location.reload();
+
+                            this.page = 1;
+                            this.loadPosts();
                         });
                     }
                 },
@@ -202,17 +243,23 @@ export default {
                 this.data[i].post_status = "publish";
             });
         },
-        postLink: function (id) {
-            return `/community/${id}`;
+        postLink: function (item) {
+            return this.activeTab == 'topic' ? `/community/${item.id}` : `/community/${item.topic_id}`;
         },
         filter: function (o) {
-            console.log(o);
             this.page = 1;
             this[o.type] = o.val;
         },
         isSimpleType: function (val) {
             return simpleTypes.includes(val);
         },
+        getContent(item) {
+            const val = item.content
+            if (val) {
+                return `#${item.floor} 回复：${item?.topic?.title}` + val.slice(0, 12) + "...";
+            }
+            return "";
+        }
     },
     filters: {
         dateFormat: function (val) {
@@ -243,6 +290,19 @@ export default {
         .u-tags {
             display: flex;
             gap: 4px;
+        }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    }
+
+    .u-title_content {
+        .flex;
+
+        p {
+            margin-left: 5px;
         }
     }
 }

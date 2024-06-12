@@ -48,6 +48,7 @@
                     :attachmentEnable="true"
                     :resourceEnable="true"
                     v-show="!post.post_mode || post.post_mode == 'tinymce'"
+                    :subtype="post.post_subtype"
                 />
             </div>
 
@@ -80,7 +81,8 @@
 
             <!-- 其它 -->
             <div class="m-publish-other" v-if="isSuperAuthor">
-                <publish-banner v-model="post.post_banner"></publish-banner>
+                <cms-banner v-model="post.post_banner"></cms-banner>
+                <publish-design-task :data="post"></publish-design-task>
             </div>
 
             <div class="m-publish-doc">
@@ -137,7 +139,7 @@ import publish_guide from "@/components/publish_guide.vue";
 import publish_mix_subtype from "@/components/publish_mix_subtype.vue";
 
 // 数据逻辑
-import { push, pull, setPostMeta } from "@/service/cms.js";
+import { push, pull, setPostMeta, pushAdmin } from "@/service/cms.js";
 import { appendToCollection } from "@/service/collection.js";
 import { AutoSaveMixin } from "@/utils/autoSaveMixin";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
@@ -157,7 +159,7 @@ export default {
         "publish-xf": publish_xf,
         "publish-collection": publish_collection,
         "publish-collection-collapse": publish_collection_collapse,
-        "publish-banner": publish_banner,
+        // "publish-banner": publish_banner,
         "publish-comment": publish_comment,
         "publish-gift": publish_gift,
         "publish-visible": publish_visible,
@@ -240,9 +242,9 @@ export default {
         },
         data: function () {
             if (this.id) {
-                return [this.id, this.post];
+                return [this.id, {...this.post, post_content: this.removeBase64Img(this.post.post_content)}];
             } else {
-                return [this.post];
+                return [{...this.post, post_content: this.removeBase64Img(this.post.post_content)}];
             }
         },
         topics: function () {
@@ -255,9 +257,6 @@ export default {
             }
             let _topics = new Set(topics);
             return Array.from(_topics);
-        },
-        isSuperAuthor() {
-            return User.isSuperAuthor();
         },
         isChangelog() {
             return this.post?.topics?.some((item) => {
@@ -283,10 +282,11 @@ export default {
         publish: function (status, skip) {
             this.post.post_status = status;
             this.processing = true;
-            return push(...this.data)
+            const fn = this.from === "admin" ? pushAdmin : push;
+            return fn(...this.data)
                 .then((res) => {
                     let result = res.data.data;
-                    this.atUser(result.ID);
+                    this.atUser(result.ID || this.id);
                     this.setHasRead();
 
                     if (this.isChangelog) {
@@ -298,10 +298,10 @@ export default {
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish(result).finally(() => {
-                        this.done(skip, result);
+                    this.afterPublish({...result, ID: result.ID || this.id, post_type: 'bps'}).finally(() => {
+                        this.done(skip, {...result, ID: result.ID || this.id, post_type: 'bps'});
                     });
-                    this.setCommentConfig("post", result.ID);
+                    this.setCommentConfig("post", result.ID || this.id);
                 })
                 .finally(() => {
                     this.processing = false;
