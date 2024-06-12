@@ -18,9 +18,9 @@
                 <publish-category v-model="post.category" :options="tags"></publish-category>
             </div>
 
-            <div class="m-publish-info m-publish-extraimg" v-if="post.category == '帕鲁' && skins.length">
-                <el-divider content-position="left">卡片皮肤</el-divider>
-                <div class="u-imgs u-skin-imgs">
+            <div class="m-publish-info m-publish-extraimg">
+                <el-divider content-position="left">装备魔卡</el-divider>
+                <div class="u-imgs u-skin-imgs" v-if="skins.length">
                     <div
                         @click="setSkin(item)"
                         :class="`u-imgs-item u-skin ${post.decoration_id === item.id && 'active'}`"
@@ -30,12 +30,10 @@
                     >
                         <el-image :src="item.url" fit="fill" />
                         <div class="u-mark">已选择</div>
-                        <div class="u-amount">
-                            剩余数量：{{ item.amount }}
-                            <a @click="goShopping" v-if="item.amount <= 0">前往购买</a>
-                        </div>
+                        <div class="u-amount">剩余数量：{{ item.amount }}</div>
                     </div>
                 </div>
+                <el-button type="primary" @click="goShopping" v-else>前往购买</el-button>
             </div>
 
             <!-- 正文 -->
@@ -221,7 +219,9 @@ export default {
         getDecoration() {
             getDecoration({ type: "palu" })
                 .then((res) => {
-                    this.skins = res.data.data.map((item) => {
+                    const list = res.data.data || [];
+                    const skins = list.filter((item) => item.amount > 0);
+                    this.skins = skins.map((item) => {
                         return {
                             val: item.val,
                             id: item.id,
