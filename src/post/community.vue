@@ -18,7 +18,7 @@
                 <publish-category v-model="post.category" :options="tags"></publish-category>
             </div>
 
-            <div class="m-publish-info m-publish-extraimg" v-if="skins.length">
+            <div class="m-publish-info m-publish-extraimg" v-if="post.category == '帕鲁' && skins.length">
                 <el-divider content-position="left">卡片皮肤</el-divider>
                 <div class="u-imgs u-skin-imgs">
                     <div
@@ -28,7 +28,7 @@
                         :key="i"
                         title="点击使用卡片皮肤，再次点击取消选择"
                     >
-                        <el-image :src="item.url" fit="cover" />
+                        <el-image :src="item.url" fit="fill" />
                         <div class="u-mark">已选择</div>
                         <div class="u-amount">
                             剩余数量：{{ item.amount }}
@@ -400,9 +400,18 @@ export default {
         padding-bottom: 20px;
         .u-imgs-item {
             position: relative;
-            min-width: 50px;
+            min-width: 150px;
+            width: 350px;
             height: 100px;
             box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+            .el-image {
+                width: 100%;
+                height: 100%;
+            }
+            .u-mark {
+                left: 2px;
+                right: initial !important;
+            }
         }
         .u-amount {
             font-size: 14px;
