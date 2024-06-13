@@ -21,6 +21,10 @@ function pull(id) {
     return $next().get(`${API_PREFIX}/community/discussion/my/topic/item/${id}`);
 }
 
+function getAllCommunity(params) {
+    return $next().get(`${API_PREFIX}/community/discussion/topic/list`, { params });
+}
+
 // =============  我的回帖 =============
 
 // 获取回帖列表
@@ -58,6 +62,7 @@ function deleteMyComment(id) {
 export {
     push,
     getMyList,
+    getAllCommunity,
     del,
     pull,
     update,

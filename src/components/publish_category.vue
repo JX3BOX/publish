@@ -2,7 +2,9 @@
     <div class="m-category-list">
         <span class="u-category">类别</span>
         <el-radio-group v-model="category" @input="updateCategory">
-            <el-radio border v-for="item in options" :key="item" :label="item">{{ item }}</el-radio>
+            <el-tooltip v-for="item in options" :key="item.name" effect="dark" :content="item.remark" placement="top-start">
+                <el-radio border :label="item.name">{{ item.name }}</el-radio>
+            </el-tooltip>
         </el-radio-group>
     </div>
 </template>
@@ -29,6 +31,16 @@ export default {
         value(newVal) {
             this.category = newVal;
         },
+        options: {
+            deep: true,
+            immediate: true,
+            handler() {
+                if (!this.value) {
+                    this.category = this.options?.[0]?.name;
+                    this.$emit("update", this.category);
+                }
+            }
+        }
     },
     model: {
         prop: "value",

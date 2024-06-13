@@ -160,9 +160,8 @@ import draggable from "vuedraggable";
 
 // 本地依赖
 import { createCollection, updateCollection, getCollectionRaw } from "../service/collection";
-// import { get_posts_by_type } from "../service/post";
 import { getMyPosts, getAllPosts } from "@/service/cms";
-// import { getAllFaceList } from "@/service/face";
+import { getMyList, getAllCommunity } from "@/service/community";
 import { getLink } from "@jx3box/jx3box-common/js/utils";
 import lodash from "lodash";
 
@@ -171,7 +170,7 @@ export default {
     props: [],
     data() {
         // 作品类型加载
-        let source_types = Object.assign({ custom: "自定义" }, __postType);
+        let source_types = Object.assign({ custom: "自定义" }, __postType, { community: "论坛" });
         delete source_types.jx3dat;
         delete source_types.notice;
 
@@ -227,55 +226,68 @@ export default {
         },
         search_handle(queryString, item) {
             if (queryString === null) item.id = queryString = "";
-            // if (item.type === 'face') {
-            //     getAllFaceList({
-            //         title: queryString,
-
-            //     }).then(res => {
-            //         item.posts = res.data.data.list?.reduce((acc, cur) => {
-            //             acc[cur.id] = {
-            //                 id: cur.id,
-            //                 title: cur.title,
-            //                 type: 'face'
-            //             }
-            //             return acc
-            //         }, {}) || {};
-            //     })
-            // }
             if (this.onlyMine) {
                 const params = {};
                 if (queryString) {
                     params.title = queryString;
                 }
-                item.type !== "custom" && (params.type = item.type);
-                getMyPosts(params).then((res) => {
-                    item.posts =
-                        res.data.data.list?.reduce((acc, cur) => {
-                            acc[cur.ID] = {
-                                id: cur.ID,
-                                title: cur.post_title,
-                                post_type: cur.post_type,
-                            };
-                            return acc;
-                        }, {}) || {};
-                });
+                if (!["custom","community"].includes(item.type)) {
+                    item.type !== "custom" && (params.type = item.type);
+                    getMyPosts(params).then((res) => {
+                        item.posts =
+                            res.data.data.list?.reduce((acc, cur) => {
+                                acc[cur.ID] = {
+                                    id: cur.ID,
+                                    title: cur.post_title,
+                                    post_type: cur.post_type,
+                                };
+                                return acc;
+                            }, {}) || {};
+                    });
+                } else if (item.type === 'community') {
+                    getMyList(params).then((res) => {
+                        item.posts =
+                            res.data.data.list?.reduce((acc, cur) => {
+                                acc[cur.id] = {
+                                    id: cur.id,
+                                    title: cur.title,
+                                    post_type: "community",
+                                };
+                                return acc;
+                            }, {}) || {};
+                    });
+                }
             } else {
                 const params = {};
                 if (queryString) {
                     params.title = queryString;
                 }
-                item.type !== "custom" && (params.type = item.type);
-                getAllPosts(params).then((res) => {
-                    item.posts =
-                        res.data.data.list?.reduce((acc, cur) => {
-                            acc[cur.ID] = {
-                                id: cur.ID,
-                                title: cur.post_title,
-                                post_type: cur.post_type,
-                            };
-                            return acc;
-                        }, {}) || {};
-                });
+                if (!["custom","community"].includes(item.type)) {
+                    item.type !== "custom" && (params.type = item.type);
+                    getAllPosts(params).then((res) => {
+                        item.posts =
+                            res.data.data.list?.reduce((acc, cur) => {
+                                acc[cur.ID] = {
+                                    id: cur.ID,
+                                    title: cur.post_title,
+                                    post_type: cur.post_type,
+                                };
+                                return acc;
+                            }, {}) || {};
+                    });
+                } else if (item.type === 'community') {
+                    getAllCommunity(params).then((res) => {
+                        item.posts =
+                            res.data.data.list?.reduce((acc, cur) => {
+                                acc[cur.id] = {
+                                    id: cur.id,
+                                    title: cur.title,
+                                    post_type: "community",
+                                };
+                                return acc;
+                            }, {}) || {};
+                    });
+                }
             }
         },
         init: function () {
@@ -373,7 +385,7 @@ export default {
         },
 
         showPostType: function (type) {
-            return __postType[type];
+            return this.source_types[type];
         },
     },
     watch: {

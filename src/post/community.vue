@@ -341,10 +341,7 @@ export default {
         },
         getTopicBucket() {
             getTopicBucket({ type: "community" }).then((res) => {
-                const data = res.data.data?.map((item) => item.name) || [];
-                if (data[0] && !this.$route.params.id) {
-                    this.post.category = data[0];
-                }
+                const data = res.data.data
                 this.tags = [...data];
             });
         },
