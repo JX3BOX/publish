@@ -44,8 +44,10 @@
                         <div class="u-amount">数量 : {{ item.amount }}</div>
                     </div>
                 </div>
-                <div class="u-null">
-                    你还没有任何魔卡，<a href="/vip/mall/list?category=virtual&sub_category=palu" target="_blank">点击前往</a>使用积分兑换。
+                <div v-else class="u-null">
+                    你还没有任何魔卡，<a href="/vip/mall/list?category=virtual&sub_category=palu" target="_blank"
+                        >点击前往</a
+                    >使用积分兑换。
                 </div>
             </div>
 
@@ -171,7 +173,7 @@ export default {
                 // 小册id
                 collection_id: "",
             },
-
+            currentDecorationId: "",
             // 选项
             community_types,
             tags: [],
@@ -200,14 +202,12 @@ export default {
         },
     },
     mounted() {
-        this.getDecoration();
         this.getTopicBucket();
         const id = this.$route.params.id;
         if (id) {
             this.post.id = id;
             this.loadCommentConfig("community", id);
         }
-
         this.post.client = "all";
     },
     methods: {
@@ -217,7 +217,7 @@ export default {
             e.stopPropagation();
         },
         setSkin(data) {
-            if (data.amount <= 0) {
+            if (data.amount <= 0 && data.id != this.currentDecorationId) {
                 this.$message({
                     message: "该皮肤已经被使用完了",
                     type: "warning",
@@ -234,7 +234,7 @@ export default {
             getDecoration({ type: "palu" })
                 .then((res) => {
                     const list = res.data.data || [];
-                    const skins = list.filter((item) => item.amount > 0);
+                    const skins = list.filter((item) => item.amount > 0 || item.id == this.currentDecorationId);
                     this.skins = skins.map((item) => {
                         return {
                             val: item.val,
@@ -271,9 +271,13 @@ export default {
             //     this.autoSave();
             // });
             const id = this.$route.params.id;
-            if (!id) return;
+            if (!id) {
+                this.getDecoration();
+                return;
+            }
             pull(id).then((res) => {
                 const data = res.data.data;
+                this.currentDecorationId = data.decoration_id;
                 this.post = {
                     ...data,
                     title: data.title,
@@ -281,6 +285,7 @@ export default {
                     collection_id: data.collection_id,
                     banner_img: data.banner_img,
                 };
+                this.getDecoration();
             });
         },
         // 发布
@@ -337,7 +342,7 @@ export default {
         getTopicBucket() {
             getTopicBucket({ type: "community" }).then((res) => {
                 const data = res.data.data?.map((item) => item.name) || [];
-                if (data[0]) {
+                if (data[0] && !this.$route.params.id) {
                     this.post.category = data[0];
                 }
                 this.tags = [...data];
@@ -375,10 +380,12 @@ export default {
         background-color: #444;
         border-color: #444;
     }
-    .u-null{
+    .u-null {
         .fz(12px);
-        color:#999;
-        a{text-decoration: underline;}
+        color: #999;
+        a {
+            text-decoration: underline;
+        }
     }
     .u-imgs {
         display: flex;
@@ -425,7 +432,7 @@ export default {
         padding-bottom: 20px;
         .u-imgs-item {
             position: relative;
-            min-width: 160px;
+            width: 260px;
             height: 50px;
             box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
             .el-image {
