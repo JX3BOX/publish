@@ -18,7 +18,7 @@
         </el-input>
 
         <div class="m-dashboard-work-filter" v-if="activeTab == 'topic'">
-            <clientBy class="u-client" @filter="filter" :showWujie="showWujie" />
+            <!-- <clientBy class="u-client" @filter="filter" :showWujie="showWujie" /> -->
             <!-- <orderBy class="u-order" @filter="filter" /> -->
         </div>
 
@@ -87,7 +87,7 @@
 import { getMyList, del, getMyReplyList, deleteMyReply } from "@/service/community.js";
 import dateFormat from "../utils/dateFormat";
 import statusMap from "@/assets/data/status.json";
-import {pick} from "lodash";
+import { pick } from "lodash";
 export default {
     name: "work",
     props: [],
@@ -168,7 +168,7 @@ export default {
         loadPosts: function () {
             this.loading = true;
             this.data = [];
-            if (this.activeTab == 'topic') {
+            if (this.activeTab == "topic") {
                 getMyList(this.params)
                     .then((res) => {
                         this.data = res.data.data.list;
@@ -191,7 +191,7 @@ export default {
             }
         },
         edit: function (item) {
-            const routeName = this.activeTab == 'topic' ? 'community' : 'community_reply';
+            const routeName = this.activeTab == "topic" ? "community" : "community_reply";
 
             const path = this.$router.resolve({
                 name: routeName,
@@ -207,7 +207,7 @@ export default {
                 confirmButtonText: "确定",
                 callback: (action) => {
                     if (action == "confirm") {
-                        const fn = this.activeTab == 'topic' ? del : deleteMyReply;
+                        const fn = this.activeTab == "topic" ? del : deleteMyReply;
                         fn(item.id).then(() => {
                             this.$message({
                                 type: "success",
@@ -244,7 +244,7 @@ export default {
             });
         },
         postLink: function (item) {
-            return this.activeTab == 'topic' ? `/community/${item.id}` : `/community/${item.topic_id}`;
+            return this.activeTab == "topic" ? `/community/${item.id}` : `/community/${item.topic_id}`;
         },
         filter: function (o) {
             this.page = 1;
@@ -254,12 +254,12 @@ export default {
             return simpleTypes.includes(val);
         },
         getContent(item) {
-            const val = item.content
+            const val = item.content;
             if (val) {
                 return `#${item.floor} 回复：${item?.topic?.title}` + val.slice(0, 12) + "...";
             }
             return "";
-        }
+        },
     },
     filters: {
         dateFormat: function (val) {
