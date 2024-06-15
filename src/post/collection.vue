@@ -54,7 +54,7 @@
                                         ></el-option>
                                     </el-select>
                                 </el-col>
-                                <el-col :span="8" class="u-collection-id">
+                                <el-col :span="20" class="u-collection-id">
                                     <el-select
                                         v-if="item.type !== 'custom'"
                                         class="u-item-value"
@@ -103,10 +103,20 @@
                                         v-else
                                         v-model.trim="item.url"
                                     ></el-input>
+                                    <div class="w-select">
+                                        <!-- TODO: 图标库options -->
+                                        <div class="u-select-label">图标</div>
+                                        <el-select v-model="item.icon">
+                                            <el-option value="1" label="1"></el-option>
+                                        </el-select>
+                                    </div>
+                                    <el-input v-model="item.custom_title">
+                                        <template #prepend>自定义标题</template>
+                                    </el-input>
                                 </el-col>
-                                <el-col :span="12" class="u-collection-url" v-if="item.url">
+                                <!-- <el-col :span="12" class="u-collection-url" v-if="item.url && item.type == 'custom'">
                                     <el-input v-model="item.title" placeholder="请输入自定义标题"></el-input>
-                                </el-col>
+                                </el-col> -->
                             </el-row>
                         </li>
                     </draggable>
@@ -164,6 +174,8 @@ import { getMyPosts, getAllPosts } from "@/service/cms";
 import { getMyList, getAllCommunity } from "@/service/community";
 import { getLink } from "@jx3box/jx3box-common/js/utils";
 import lodash from "lodash";
+import xfid from "@jx3box/jx3box-data/data/xf/xfid.json";
+import schoolid from "@jx3box/jx3box-data/data/xf/schoolid.json";
 
 export default {
     name: "collection",
@@ -222,6 +234,8 @@ export default {
                 url: "",
                 posts: null,
                 post_type: "",
+                custom_title: "",
+                icon: "",
             });
         },
         search_handle(queryString, item) {
@@ -231,7 +245,7 @@ export default {
                 if (queryString) {
                     params.title = queryString;
                 }
-                if (!["custom","community"].includes(item.type)) {
+                if (!["custom", "community"].includes(item.type)) {
                     item.type !== "custom" && (params.type = item.type);
                     getMyPosts(params).then((res) => {
                         item.posts =
@@ -244,7 +258,7 @@ export default {
                                 return acc;
                             }, {}) || {};
                     });
-                } else if (item.type === 'community') {
+                } else if (item.type === "community") {
                     getMyList(params).then((res) => {
                         item.posts =
                             res.data.data.list?.reduce((acc, cur) => {
@@ -262,7 +276,7 @@ export default {
                 if (queryString) {
                     params.title = queryString;
                 }
-                if (!["custom","community"].includes(item.type)) {
+                if (!["custom", "community"].includes(item.type)) {
                     item.type !== "custom" && (params.type = item.type);
                     getAllPosts(params).then((res) => {
                         item.posts =
@@ -275,7 +289,7 @@ export default {
                                 return acc;
                             }, {}) || {};
                     });
-                } else if (item.type === 'community') {
+                } else if (item.type === "community") {
                     getAllCommunity(params).then((res) => {
                         item.posts =
                             res.data.data.list?.reduce((acc, cur) => {
@@ -412,6 +426,6 @@ export default {
 };
 </script>
 
-<style scoped lang="less">
+<style lang="less">
 @import "../assets/css/collection.less";
 </style>
