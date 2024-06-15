@@ -104,10 +104,14 @@
                                         v-model.trim="item.url"
                                     ></el-input>
                                     <div class="w-select">
-                                        <!-- TODO: 图标库options -->
                                         <div class="u-select-label">图标</div>
-                                        <el-select v-model="item.icon">
-                                            <el-option value="1" label="1"></el-option>
+                                        <el-select v-model="item.icon" filterable clearable popper-class="m-collection-icon__select">
+                                            <el-option v-for="_icon in icons" :key="_icon.value" :value="_icon.value" :label="_icon.label">
+                                                <div class="u-collection-icon">
+                                                    <img class="u-icon" :src="iconUrl(_icon.value)" alt="">
+                                                    {{ _icon.label }}
+                                                </div>
+                                            </el-option>
                                         </el-select>
                                     </div>
                                     <el-input v-model="item.custom_title">
@@ -161,7 +165,7 @@
 </template>
 
 <script>
-import { __Root, __postType, __wikiType, __appType } from "@jx3box/jx3box-common/data/jx3box.json";
+import { __Root, __postType, __wikiType, __appType, __imgPath } from "@jx3box/jx3box-common/data/jx3box.json";
 import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";
 import CollectionPublic from "@jx3box/jx3box-editor/service/enum/CollectionPublic";
 import header from "@/components/publish_header.vue";
@@ -211,6 +215,23 @@ export default {
         id: function () {
             return this.$route.params.collection_id;
         },
+        icons: function() {
+            const icons = [];
+            for (let key in xfid) {
+                icons.push({
+                    value: `xf_${key}`,
+                    label: xfid[key],
+
+                });
+            }
+            for (let key in schoolid) {
+                icons.push({
+                    value: `school_${key}`,
+                    label: schoolid[key],
+                });
+            }
+            return icons;
+        }
     },
     methods: {
         tags_filters(query) {
@@ -400,6 +421,10 @@ export default {
 
         showPostType: function (type) {
             return this.source_types[type];
+        },
+        iconUrl: function (icon) {
+            const key = icon.replace("_", '/')
+            return `${__imgPath}image/${key}.png`;
         },
     },
     watch: {
