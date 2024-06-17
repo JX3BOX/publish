@@ -34,7 +34,7 @@
         </el-select>
         <div class="u-tip" v-if="isEmpty">
             <i class="el-icon-info"></i> 当前没有任何小册，
-            <router-link to="/collection">创建小册</router-link>
+            <a href="/publish/#/collection" target="_blank">创建小册</a>
         </div>
     </div>
 </template>
