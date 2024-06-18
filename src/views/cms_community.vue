@@ -118,7 +118,7 @@ export default {
                 // order: this.order,
                 pageSize: this.per,
                 index: this.page,
-                client: this.client,
+                // client: this.client,
             };
         },
         publishLink: function () {
@@ -144,7 +144,6 @@ export default {
             },
         },
         activeTab: {
-            immediate: true,
             handler: function () {
                 this.page = 1;
                 this.loadPosts();
