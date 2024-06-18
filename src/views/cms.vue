@@ -2,19 +2,12 @@
     <div class="m-dashboard-work m-dashboard-cms" v-loading="loading">
         <div class="m-dashboard-work-header">
             <h2 class="u-title">{{ typeLabel }}</h2>
-            <a
-                :href="publishLink"
-                class="u-publish el-button el-button--primary el-button--small"
-            >
+            <a :href="publishLink" class="u-publish el-button el-button--primary el-button--small">
                 <i class="el-icon-document"></i> 发布作品
             </a>
         </div>
 
-        <el-input
-            class="m-dashboard-work-search"
-            placeholder="请输入搜索内容"
-            v-model="search"
-        >
+        <el-input class="m-dashboard-work-search" placeholder="请输入搜索内容" v-model="search">
             <span slot="prepend">关键词</span>
             <el-button slot="append" icon="el-icon-search"></el-button>
         </el-input>
@@ -28,22 +21,12 @@
             <ul class="m-dashboard-box-list" v-if="data && data.length">
                 <li v-for="(item, i) in data" :key="i">
                     <i class="u-icon">
-                        <img
-                            src="../assets/img/works/repo.svg"
-                            v-if="item.post_status == 'publish'"
-                        />
-                        <img
-                            v-else
-                            src="../assets/img/works/draft.svg"
-                            :title="item.post_status | statusFormat"
-                        />
+                        <img src="../assets/img/works/repo.svg" v-if="item.post_status == 'publish'" />
+                        <img v-else src="../assets/img/works/draft.svg" :title="item.post_status | statusFormat" />
                     </i>
-                    <a
-                        class="u-title"
-                        target="_blank"
-                        :href="postLink(item.post_type, item.ID)"
-                        >{{ item.post_title || "无标题" }}</a
-                    >
+                    <a class="u-title" target="_blank" :href="postLink(item.post_type, item.ID)">{{
+                        item.post_title || "无标题"
+                    }}</a>
                     <div class="u-desc">
                         <span class="u-desc-subitem">
                             <i class="el-icon-view"></i>
@@ -68,12 +51,7 @@
                             title="编辑"
                             @click="edit(item.post_type, item.ID)"
                         ></el-button>
-                        <el-button
-                            size="mini"
-                            icon="el-icon-delete"
-                            title="删除"
-                            @click="del(item.ID)"
-                        ></el-button>
+                        <el-button size="mini" icon="el-icon-delete" title="删除" @click="del(item.ID)"></el-button>
                     </el-button-group>
                 </li>
             </ul>
@@ -101,12 +79,9 @@
 <script>
 import { getMyPosts, push, del } from "@/service/cms.js";
 import { editLink, getLink } from "@jx3box/jx3box-common/js/utils.js";
-import {
-    __postType,
-    __visibleMap,
-} from "@jx3box/jx3box-common/data/jx3box.json";
+import { __postType, __visibleMap } from "@jx3box/jx3box-common/data/jx3box.json";
 import dateFormat from "../utils/dateFormat";
-import statusMap from '@/assets/data/status.json'
+import statusMap from "@/assets/data/status.json";
 export default {
     name: "work",
     props: [],
@@ -119,8 +94,7 @@ export default {
             per: 10,
             search: "",
             order: "update",
-            client: "all",
-
+            client: "std",
             types: Object.assign(__postType, { joke: "剑三骚话" }),
             statusMap,
         };
