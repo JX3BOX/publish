@@ -16,6 +16,8 @@
                 <publish-original v-model="post.original"></publish-original>
                 <!-- 客户端 -->
                 <publish-client v-model="post.client" :forbidAll="true" :showMobile="true"></publish-client>
+                <!-- 是否适用无界 -->
+                <publish-wujie v-if="post.client == 'std'" v-model="post.is_wujie"></publish-wujie>
                 <!-- 资料片 -->
                 <publish-zlp v-model="post.zlp" :client="post.client"></publish-zlp>
                 <!-- 心法 -->
@@ -116,6 +118,7 @@ import publish_revision from "@/components/publish_revision.vue";
 import publish_extend from "@/components/publish_extend.vue";
 import publish_guide from "@/components/publish_guide.vue";
 import publish_mix_subtype from "@/components/publish_mix_subtype.vue";
+import publish_wujie from "@/components/publish_wujie.vue";
 
 // 数据逻辑
 import { push, pushAdmin } from "@/service/cms.js";
@@ -145,6 +148,7 @@ export default {
         "publish-extend": publish_extend,
         "publish-guide": publish_guide,
         "publish-mix-subtype": publish_mix_subtype,
+        "publish-wujie": publish_wujie,
     },
     data: function () {
         return {
@@ -217,6 +221,7 @@ export default {
                 include_video: 0,
 
                 mix_subtype: [],
+                is_wujie: 0,
             },
         };
     },

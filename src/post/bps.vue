@@ -16,6 +16,8 @@
                 <publish-original v-model="post.original"></publish-original>
                 <!-- 客户端 -->
                 <publish-client v-model="post.client" :showMobile="true" :forbid-all="true"></publish-client>
+                <!-- 是否适用无界 -->
+                <publish-wujie v-if="post.client == 'std'" v-model="post.is_wujie"></publish-wujie>
                 <!-- 资料片 -->
                 <publish-zlp v-model="post.zlp" :client="post.client"></publish-zlp>
                 <!-- 类型 -->
@@ -137,6 +139,7 @@ import publish_at_authors from "@/components/publish_at_authors.vue";
 import publish_changelog from "@/components/publish_changelog.vue";
 import publish_guide from "@/components/publish_guide.vue";
 import publish_mix_subtype from "@/components/publish_mix_subtype.vue";
+import publish_wujie from "@/components/publish_wujie.vue";
 
 // 数据逻辑
 import { push, pull, setPostMeta, pushAdmin } from "@/service/cms.js";
@@ -170,6 +173,7 @@ export default {
         "publish-changelog": publish_changelog,
         "publish-guide": publish_guide,
         "publish-mix-subtype": publish_mix_subtype,
+        "publish-wujie": publish_wujie,
     },
     data: function () {
         return {
@@ -229,7 +233,8 @@ export default {
                 // 阅读权限（0公开，1仅自己，2亲友，3密码，4付费，5粉丝）
                 visible: 0,
 
-                mix_subtype: []
+                mix_subtype: [],
+                is_wujie: 0,
             },
 
             // 选项
