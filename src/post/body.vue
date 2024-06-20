@@ -43,7 +43,7 @@
                 <!-- 客户端 -->
                 <el-form-item label="版本">
                     <el-radio-group v-model="post.client">
-                        <el-radio label="std">重制</el-radio>
+                        <el-radio label="std">剑三</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <!-- <publish-client v-model="post.client" :forbidAll="true"></publish-client> -->
