@@ -55,6 +55,7 @@
                     v-model="post.post_content"
                     :attachmentEnable="true"
                     :resourceEnable="true"
+                    :subtype="post.post_subtype"
                     v-show="!post.post_mode || post.post_mode == 'tinymce'"
                 />
             </div>
@@ -323,7 +324,7 @@ export default {
             return fn(..._post)
                 .then((res) => {
                     let result = res.data.data;
-                    syncRedis({...result, ...data}).catch((err) => {
+                    syncRedis({ ...result, ...data }).catch((err) => {
                         console.log("[Redis同步作业失败]", err);
                     });
                     this.atUser(result.ID || this.id);
@@ -331,8 +332,8 @@ export default {
                     return result;
                 })
                 .then((result) => {
-                    this.afterPublish({...result, ID: result.ID || this.id, post_type: 'macro'}).finally(() => {
-                        this.done(skip, {...result, ID: result.ID || this.id, post_type: 'macro'});
+                    this.afterPublish({ ...result, ID: result.ID || this.id, post_type: "macro" }).finally(() => {
+                        this.done(skip, { ...result, ID: result.ID || this.id, post_type: "macro" });
                     });
 
                     this.setCommentConfig("post", result.ID || this.id);
