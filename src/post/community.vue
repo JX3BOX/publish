@@ -54,12 +54,7 @@
             <!-- 正文 -->
             <div class="m-publish-content">
                 <el-divider content-position="left">正文</el-divider>
-                <Tinymce
-                    v-model="post.content"
-                    :attachmentEnable="true"
-                    :resourceEnable="true"
-                    v-show="!post.post_mode || post.post_mode == 'tinymce'"
-                />
+                <Tinymce v-model="post.content" :attachmentEnable="true" :resourceEnable="true" v-show="'tinymce'" />
             </div>
 
             <!-- 附加 -->
@@ -341,7 +336,7 @@ export default {
         },
         getTopicBucket() {
             getTopicBucket({ type: "community" }).then((res) => {
-                const data = res.data.data
+                const data = res.data.data;
                 this.tags = [...data];
             });
         },
