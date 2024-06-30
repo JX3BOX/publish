@@ -10,10 +10,12 @@
             <div class="m-publish-info">
                 <el-divider content-position="left">信息</el-divider>
                 <el-form-item label="捏脸码">
-                    <el-radio-group v-model="post.code_mode">
-                        <el-radio :label="0">否</el-radio>
-                        <el-radio :label="1">是</el-radio>
-                    </el-radio-group>
+                    <el-switch
+                        v-model="post.code_mode"
+                        :active-value="1"
+                        :inactive-value="0"
+                        active-color="#13ce66"
+                    ></el-switch>
                 </el-form-item>
                 <el-form-item label="数据" v-if="!post.code_mode">
                     <face-attachment :body="post.body_type" type="face" @update:data="handleFaceChange" />
