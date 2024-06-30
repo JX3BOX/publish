@@ -9,7 +9,13 @@
             <!-- 信息 -->
             <div class="m-publish-info">
                 <el-divider content-position="left">信息</el-divider>
-                <el-form-item label="数据">
+                <el-form-item label="捏脸码">
+                    <el-radio-group v-model="post.code_mode">
+                        <el-radio :label="0">否</el-radio>
+                        <el-radio :label="1">是</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="数据" v-if="!post.code_mode">
                     <face-attachment :body="post.body_type" type="face" @update:data="handleFaceChange" />
                     <div class="u-attachment" v-for="item in faceAttachments" :key="item.id">
                         <el-button
@@ -41,6 +47,9 @@
                         />
                     </div>
                 </el-form-item>
+                <el-form-item label="捏脸码" prop="code" v-else>
+                    <el-input v-model="post.code" placeholder="请输入捏脸码"></el-input>
+                </el-form-item>
                 <!-- <div class="u-face-info" v-if="faceData"> -->
                 <!-- {{
                     `${maps.client[post.client]}·${maps.roleType[post.body_type]}·${
@@ -51,7 +60,7 @@
 
                 <!-- 自动解析 -->
                 <!-- 体型 -->
-                <el-form-item label="体型" v-if="faceData">
+                <el-form-item label="体型" v-if="faceData || post.code_mode">
                     <el-radio-group v-model="post.body_type">
                         <el-radio
                             :label="~~body_type"
@@ -62,16 +71,20 @@
                     </el-radio-group>
                 </el-form-item>
                 <!-- 客户端 -->
-                <publish-client v-if="faceData" v-model="post.client" :forbidAll="true"></publish-client>
+                <publish-client
+                    v-if="faceData || post.code_mode"
+                    v-model="post.client"
+                    :forbidAll="true"
+                ></publish-client>
                 <!-- 画风 -->
-                <el-form-item label="画风" v-if="faceData && post.client === 'std'">
+                <el-form-item label="画风" v-if="(faceData || post.code_mode) && post.client === 'std'">
                     <el-radio-group v-model="post.is_new_face">
                         <el-radio :label="1">写实</el-radio>
                         <el-radio :label="0">写意</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <!-- 可新建 -->
-                <el-form-item v-if="faceData" label="可新建">
+                <el-form-item v-if="faceData || post.code_mode" label="可新建">
                     <el-switch v-model="post.is_unlimited" :active-value="1" :inactive-value="0"> </el-switch>
                 </el-form-item>
 
@@ -195,6 +208,9 @@ export default {
                 price_count: 0, // 数量
                 is_unlimited: 0, // 可新建
                 // 从文件中读取的信息
+                // 捏脸码
+                code_mode: 0, // 是否是捏脸码
+                code: "", // 捏脸码
             },
             options: {
                 bodyMap,
@@ -214,7 +230,7 @@ export default {
 
             decalDb: null,
 
-            cny_enable: 0
+            cny_enable: 0,
         };
     },
     computed: {
@@ -309,8 +325,16 @@ export default {
         },
         validator(data) {
             // 必填字段 title file
-            const required = ["title", "file"];
-            const requiredMsg = ["请填写标题", "请上传数据"];
+            let required = ["title"];
+            let requiredMsg = ["请填写标题"];
+            console.log(data);
+            if (data.code_mode) {
+                required.push("code");
+                requiredMsg.push("请填写捏脸码");
+            } else {
+                required.push("file");
+                requiredMsg.push("请上传数据");
+            }
             let message;
             for (let i = 0; i < required.length; i++) {
                 if (!data[required[i]]) {
