@@ -49,7 +49,11 @@
                         />
                     </div>
                 </el-form-item>
-                <el-form-item label="捏脸码" prop="code" v-else>
+                <el-form-item prop="code" v-else>
+                    <template #label>
+                        <span>捏脸码</span>
+                        <i class="el-icon-document-copy" @click="codePaste" style="margin-left: 2px; color: #c00"></i>
+                    </template>
                     <el-input v-model="post.code" placeholder="请输入捏脸码"></el-input>
                 </el-form-item>
                 <!-- <div class="u-face-info" v-if="faceData"> -->
@@ -480,6 +484,15 @@ export default {
                     },
                 }
             ).catch((action) => {});
+        },
+        // 粘贴捏脸码
+        async codePaste() {
+            try {
+                const text = await navigator.clipboard.readText();
+                this.post.code = text;
+            } catch (err) {
+                this.$message.error("读取剪切板内容失败");
+            }
         },
     },
 };
