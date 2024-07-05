@@ -363,7 +363,8 @@ export default {
             if (
                 !data.post_title ||
                 data.post_title?.indexOf("自用") > -1 ||
-                data.post_meta?.data?.every((item) => !item.macro)
+                (!data.is_wujie && data.post_meta?.data?.every((item) => !item.macro)) ||
+                (data.is_wujie && data.post_meta?.data?.every((item) => !item.sq?.length))
             ) {
                 data.visible = 1;
             }
