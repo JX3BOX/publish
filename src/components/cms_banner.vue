@@ -50,6 +50,13 @@ export default {
     .u-upload {
         width: 300px !important;
         height: 100px !important;
+        .pr;
+    }
+    i {
+        .pa;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 }
 </style>
