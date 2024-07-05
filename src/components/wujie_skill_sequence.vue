@@ -90,8 +90,8 @@
                             >
                         </div>
 
-                        <div class="m-selected-skills">
-                            <draggable v-model="item.sq" class="m-skills-list">
+                        <div class="m-selected-skills" :class="{'is-empty': !item.sq || !item.sq.length }">
+                            <draggable v-model="item.sq" class="m-skills-list" v-show="item.sq && item.sq.length">
                                 <li
                                     v-for="(skill, index) in item.sq"
                                     :key="skill.SkillID + '' + index"
@@ -106,6 +106,7 @@
                                     ></i>
                                 </li>
                             </draggable>
+                            <el-alert show-icon type="warning" :closable="false" v-if="!item.sq || !item.sq.length" title="暂未选择技能"></el-alert>
                         </div>
                     </div>
                     <el-form-item label="其它" class="m-macro-misc">
@@ -153,7 +154,7 @@ import User from "@jx3box/jx3box-common/js/user";
 import { sterilizer } from "sterilizer/index.js";
 import { __iconPath } from "@jx3box/jx3box-common/data/jx3box.json";
 import isEmptyMeta from "@/utils/isEmptyMeta.js";
-import cloneDeep from "lodash/cloneDeep";
+import {cloneDeep} from "lodash";
 import publish_wujie_skill from "@/components/publish_wujie_skill.vue";
 import { iconLink } from "@jx3box/jx3box-common/js/utils";
 

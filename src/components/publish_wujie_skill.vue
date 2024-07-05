@@ -61,7 +61,7 @@ import { getMobileForceSkillList } from "@/service/node";
 import xfmap from "@jx3box/jx3box-data/data/xf/xf.json";
 import { iconLink } from "@jx3box/jx3box-common/js/utils";
 import Sortable from "sortablejs";
-import { cloneDeep } from "lodash";
+import { cloneDeep, uniqBy } from "lodash";
 export default {
     name: "publish_wujie_skill",
     props: {
@@ -132,7 +132,7 @@ export default {
             });
         },
         formatSkill(arr) {
-            return arr.filter((item) => item?.SkillID);
+            return uniqBy(arr.filter((item) => item?.SkillID), 'IconID');
         },
         selectSkill(skill) {
             if (this.selectedSkills?.length >= this.max) {

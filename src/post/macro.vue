@@ -294,11 +294,12 @@ export default {
         checkMacro: function () {
             let data = this.post.post_meta.data;
             let result = true;
+            const str = this.post?.is_wujie ? "序列" : "宏";
             data.forEach((item, index) => {
                 if (!item.name) {
                     this.$notify({
                         title: "提醒",
-                        message: `第${index + 1}个宏没有填写名称`,
+                        message: `第${index + 1}个${str}没有填写名称`,
                         type: "warning",
                     });
                     result = false;
