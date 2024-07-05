@@ -1,0 +1,195 @@
+.m-publish-wujie-skill {
+    .m-pvp-martial {
+        display: flex;
+        gap: 10px;
+
+        .u-platform-select {
+            .size(30px, 400px);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .u-platform-option {
+            .pointer;
+            flex-grow: 1;
+            color: white;
+            background-color: #1a2b22;
+            writing-mode: vertical-rl; /* 或者使用 vertical-lr */
+            text-orientation: upright;
+            text-align: center;
+            line-height: 32px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .u-platform-option.is-select {
+            background-color: #2a9998;
+            flex-grow: 3;
+        }
+
+        .u-skill-list {
+            flex-grow: 1;
+            width: 0;
+
+            display: flex;
+            background: #1a2b22;
+            padding: 20px;
+            border-radius: 8px;
+            flex-direction: column;
+            .m-martial-skills {
+                flex: 1;
+            }
+            .m-martial-skill {
+                .u-title {
+                    // 竖体显示
+                    writing-mode: tb-rl;
+                    letter-spacing: 1px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .u-title-name {
+                    z-index: 1;
+                    color: #fff;
+                    font-size: 12px;
+                }
+                .u-title-img {
+                    width: 24px;
+                    height: 71px;
+                    position: absolute;
+                }
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                // border: 1px solid rgb(40,107,113);
+                padding: 4px 0;
+                position: relative;
+
+                .u-name {
+                    display: block;
+                    color: #fff;
+                    font-size: 12px;
+                    text-align: center;
+                    // overflow: hidden;
+                    white-space: nowrap;
+                    width: 48px;
+                }
+            }
+            .m-skills {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+
+            .m-skill {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                cursor: pointer;
+
+                .u-skill-icon {
+                    box-sizing: border-box;
+                    // border: 2px solid #000;
+                }
+
+                .u-skill.is-wujie .u-skill-icon {
+                    border: 2px solid #2a9998;
+                    border-radius: 50%;
+                    width: 52px;
+                    height: 52px;
+                }
+
+                .u-skill.active {
+                    .u-name {
+                        color: #a5ffd0;
+                        text-shadow: 0 0 3px #2ffbb2;
+                    }
+                }
+            }
+        }
+    }
+
+    // 已选数据
+    .m-selected-skills {
+        height: 80px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        .scrollbar();
+        overflow-y: auto;
+        .m-skills-list {
+            .flex;
+            gap: 30px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            .flex;
+            flex-wrap: wrap;
+        }
+        .m-skill {
+            // position: relative;
+            // display: flex;
+            // justify-content: center;
+            .pr;
+
+            &:not(:last-of-type)::after {
+                content: "▲";
+                .pa;
+                right: -25px;
+                top: 15px;
+                transform: rotate(90deg);
+            }
+
+            .u-remove-icon {
+                .pa;
+                right: -4px;
+                top: -4px;
+                cursor: pointer;
+                // .none;
+
+                background-color: #c00;
+                .size(12px);
+                .r(50%);
+                .db;
+                i {
+                    color: #fff;
+                    .fz(12px);
+                    .db;
+                }
+                &:hover {
+                    background-color: #f00;
+                }
+            }
+
+            .u-skill-icon {
+                .size(48px, 48px);
+            }
+
+            .u-name {
+                display: block;
+                font-size: 12px;
+                text-align: center;
+                overflow: hidden;
+                white-space: nowrap;
+                width: 48px;
+            }
+
+            .u-mask {
+                .pa;
+                .lt(0);
+                .size(48px, 48px);
+                background-color: rgba(0, 0, 0, 0.5);
+                .r(6px);
+                .none;
+                .pointer;
+            }
+
+            &:hover {
+                cursor: move;
+            }
+        }
+    }
+}

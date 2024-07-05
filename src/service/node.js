@@ -17,4 +17,13 @@ function getSkillList(params) {
     })
 }
 
-export { getSkill, getSkillList };
+function getMobileForceSkillList(force_id) {
+    return $node().get("/v2/kungfu/panel", {
+        params: {
+            mount_id: force_id,
+            client: 'wujie'
+        },
+    });
+}
+
+export { getSkill, getSkillList, getMobileForceSkillList };

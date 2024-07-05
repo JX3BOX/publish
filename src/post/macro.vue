@@ -17,6 +17,8 @@
                 <publish-original v-model="post.original"></publish-original>
                 <!-- 客户端 -->
                 <!-- <publish-client v-model="post.client" :forbidAll="true"></publish-client> -->
+                 <!-- 是否适用无界 -->
+                <publish-wujie v-if="post.client == 'std'" v-model="post.is_wujie"></publish-wujie>
                 <!-- 语言：简体/繁体 -->
                 <publish-lang v-model="post.lang"></publish-lang>
                 <!-- 资料片 -->
@@ -26,7 +28,7 @@
             </div>
 
             <!-- 宏区域 -->
-            <publish-macro v-model="post.post_meta" :client="post.client">
+            <publish-macro v-if="!post.is_wujie" v-model="post.post_meta" :client="post.client">
                 <!-- 配装 -->
                 <publish-pz v-model="post.pz" :limit="8" :query="pz_query">
                     <span class="u-pz-tip" slot="prepend">
@@ -37,6 +39,8 @@
                     <pz-haste :client="post.client" :mount="pz_query.mount"></pz-haste>
                 </template>
             </publish-macro>
+
+            <wujie-skill-sequence v-model="post.post_meta" :subtype="post.post_subtype" v-else></wujie-skill-sequence>
 
             <!-- 正文 -->
             <div class="m-publish-content">
@@ -135,9 +139,9 @@ import publish_lang from "@/components/publish_lang";
 import publish_zlp from "@/components/publish_zlp";
 import publish_xf from "@/components/publish_xf";
 import publish_macro from "@/components/publish_macro";
+import wujie_skill_sequence from "@/components/wujie_skill_sequence.vue";
 import publish_collection from "@/components/publish_collection";
 import publish_collection_collapse from "@/components/publish_collection_collapse";
-import publish_banner from "@/components/publish_banner";
 import publish_comment from "@/components/publish_comment";
 import publish_gift from "@/components/publish_gift";
 import publish_visible from "@/components/publish_visible";
@@ -147,6 +151,7 @@ import publish_revision from "@/components/publish_revision.vue";
 import publish_at_authors from "@/components/publish_at_authors.vue";
 import pz_haste from "@/components/pz_haste.vue";
 import publish_guide from "@/components/publish_guide.vue";
+import publish_wujie from "@/components/publish_wujie.vue";
 
 // 数据逻辑
 import { push, pushAdmin, getBreadCrumb } from "@/service/cms.js";
@@ -182,6 +187,8 @@ export default {
         "publish-at-authors": publish_at_authors,
         "pz-haste": pz_haste,
         "publish-guide": publish_guide,
+        "publish-wujie": publish_wujie,
+        "wujie-skill-sequence": wujie_skill_sequence,
     },
     data: function () {
         return {
@@ -215,6 +222,7 @@ export default {
                             equip: "",
                             equip_type: "jx3box",
                             desc: "",
+                            sq: []
                         },
                     ],
                 },
@@ -251,6 +259,8 @@ export default {
 
                 // 阅读权限（0公开，1仅自己，2亲友，3密码，4付费，5粉丝）
                 visible: 0,
+
+                is_wujie: 0,
             },
             macro_publish_ac: "",
         };
