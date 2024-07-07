@@ -25,7 +25,7 @@
                     </div>
                     <div class="m-skills">
                         <div class="m-skill" v-for="(skill, index) in formatSkill(wujie_data.common)" :key="index" @click="selectSkill(skill)">
-                            <div class="u-skill" v-if="skill && skill.IconID">
+                            <div class="u-skill is-wujie" v-if="skill && skill.IconID">
                                 <img class="u-skill-icon" :src="iconLink(skill.IconID)" :alt="skill.IconID" />
                                 <span class="u-name" :title="skill.Name">{{ skill.Name }}</span>
                             </div>
