@@ -4,6 +4,7 @@
             <div v-for="star in stars" class="m-publish-mark" :key="star" @click="onStarClick(star)">
                 <img :src="imgPath(star)" alt="" svg-inline>
             </div>
+            <i class="u-remove el-icon-remove-outline" title="移除标记" @click="onRemove"></i>
         </div>
         <div slot="reference" class="m-mark-content" @click="onVisibleChange">
             <img v-if="star" :src="imgPath(star)" class="u-mark-img" alt="" svg-inline>
@@ -53,12 +54,12 @@ export default {
             return require(`../assets/img/macro/${star}.svg`);
         },
         onStarClick(star) {
-            if (this.star === star) {
-                this.star = "";
-            } else {
-                this.star = star;
-            }
+            this.star = star;
             this.visible = false;
+            this.$emit("change", this.star);
+        },
+        onRemove() {
+            this.star = "";
             this.$emit("change", this.star);
         },
         onVisibleChange() {
@@ -84,6 +85,16 @@ export default {
             width: 20px;
             height: 20px;
         }
+    }
+
+    .u-remove {
+        .pointer;
+        font-size: 18px;
+
+        color: #F56C6C;
+
+        // 45度旋转
+        transform: rotate(-45deg);
     }
 }
 .m-mark-content {
