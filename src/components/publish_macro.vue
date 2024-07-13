@@ -41,6 +41,7 @@
                             </a>
                         </h5>
                         <div class="u-group">
+                            <publish-mark :value="item.mark" @change="onMarkChange"></publish-mark>
                             <div class="u-subblock m-macro-icon">
                                 <el-input
                                     v-model="item.icon"
@@ -185,6 +186,7 @@ import { sterilizer } from "sterilizer/index.js";
 import { __iconPath } from "@jx3box/jx3box-common/data/jx3box.json";
 import isEmptyMeta from "@/utils/isEmptyMeta.js";
 import cloneDeep from 'lodash/cloneDeep'
+import publish_mark from "./publish_mark.vue";
 
 import Sortable from 'sortablejs'
 // META空模板
@@ -199,13 +201,16 @@ const default_meta = {
             equip: "",
             equip_type: "jx3box",
             desc: "",
+            mark: "",
         },
     ],
 };
 export default {
     name: "publishMacro",
     props: ["data", "client"],
-    components: {},
+    components: {
+        "publish-mark": publish_mark,
+    },
     data: function () {
         return {
             macros: this.data,
@@ -269,6 +274,7 @@ export default {
                 equip: "",
                 equip_type: "",
                 desc: "",
+                mark: "",
             });
             this.activeIndex = index;
         },
@@ -331,6 +337,11 @@ export default {
             id = Math.max(0, Math.min(id, 30000));
             this.$set(item, "icon", id);
             return __iconPath + "icon/" + id + ".png";
+        },
+
+        // 标记
+        onMarkChange: function (val) {
+            this.$set(this.macros.data[this.activeIndex - 1], "mark", val);
         },
     },
     filters: {},

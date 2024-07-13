@@ -222,7 +222,8 @@ export default {
                             equip: "",
                             equip_type: "jx3box",
                             desc: "",
-                            sq: []
+                            sq: [],
+                            mark: "",
                         },
                     ],
                 },

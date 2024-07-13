@@ -52,7 +52,7 @@ export default {
         height: 100px !important;
         .pr;
     }
-    i {
+    .el-icon-plus {
         .pa;
         top: 50%;
         left: 50%;
