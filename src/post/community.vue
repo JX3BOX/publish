@@ -65,6 +65,12 @@
                 </publish-collection>
             </div>
 
+            <!-- 临时 -->
+            <div class="m-publish-extend">
+                <el-divider content-position="left">临时</el-divider>
+                <publish-at-authors></publish-at-authors>
+            </div>
+
             <!-- 附图 -->
             <div class="m-publish-extraimg" v-show="extraImages.length">
                 <el-divider content-position="left">附图</el-divider>
@@ -121,6 +127,7 @@ import publish_revision from "@/components/publish_revision.vue";
 import publish_category from "@/components/publish_category.vue";
 // import publish_client from "@/components/publish_client.vue";
 import publish_banner from "@/components/publish_banner";
+import publish_at_authors from "@/components/publish_at_authors.vue"
 
 // 数据逻辑
 import { getTopicBucket } from "@/service/cms.js";
@@ -140,6 +147,7 @@ export default {
         "publish-category": publish_category,
         // "publish-client": publish_client,
         "publish-banner": publish_banner,
+        "publish-at-authors": publish_at_authors,
     },
     data: function () {
         return {
@@ -173,6 +181,8 @@ export default {
             community_types,
             tags: [],
             buckets: [],
+
+            post_type: "community",
         };
     },
     computed: {
