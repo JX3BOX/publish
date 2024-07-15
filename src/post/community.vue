@@ -303,6 +303,8 @@ export default {
                             message: "更新成功",
                             type: "success",
                         });
+
+                        this.atUser(this.data.id);
                         // 跳转
                         setTimeout(() => {
                             location.href = `/community/${this.post.id || res.data.data.id}`;
@@ -318,6 +320,8 @@ export default {
                             message: "发布成功",
                             type: "success",
                         });
+
+                        this.atUser(res.data.data.id)
                         // 跳转
                         setTimeout(() => {
                             location.href = `/community/${this.post.id || res.data.data.id}`;
