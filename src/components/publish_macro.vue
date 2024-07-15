@@ -48,7 +48,7 @@
                                     placeholder="图标ID"
                                     :minlength="1"
                                     :maxlength="10"
-                                    :max="30000"
+                                    :max="1000000"
                                     :min="0"
                                 >
                                     <template slot="prepend">
