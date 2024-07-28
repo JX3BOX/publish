@@ -8,7 +8,6 @@
                 <el-input v-model="pvpData.content" placeholder="请在此处输入技巧概述，最多200个字。" type="textarea" show-word-limit maxlength="200" :rows="5"> </el-input>
             </div>
             <div class="m-macro-talent m-macro-item" v-if="client != 'origin'">
-                <h5 class="u-title">奇穴方案</h5>
                 <!-- <el-input v-model="pvpData.talent" placeholder="奇穴方案编码" @change="checkTalent(pvpData.talent)">
                     <template slot="prepend">
                         <a class="u-get" target="_blank" href="/macro/talent">
@@ -17,9 +16,9 @@
                         </a>
                     </template>
                 </el-input> -->
-                <publish-qixue v-model="pvpData.talent" :subtype="subtype"></publish-qixue>
+                <publish-qixue v-model="pvpData.talent" :subtype="subtype" :is-wujie="isWujie"></publish-qixue>
             </div>
-            <div class="m-macro-talent m-macro-item" v-if="client === 'origin'">
+            <div class="m-macro-talent m-macro-item" v-if="client === 'origin' && subtype !== '通用'">
                 <h5 class="u-title">镇派方案</h5>
                 <div class="m-macro-talent-simulator">
                     <div class="qx-container"></div>
@@ -34,7 +33,7 @@
                 </el-input>
             </div>
 
-            <div class="m-macro-talent m-macro-item">
+            <div class="m-macro-talent m-macro-item" v-show="subtype !== '通用'">
                 <h5 class="u-title">{{ client === "std" ? "奇穴" : "镇派" }}讲解</h5>
                 <el-input v-model="pvpData.talent_desc" placeholder="输入内容（选填）" type="textarea" show-word-limit maxlength="400" :rows="4">
                 </el-input>
@@ -146,7 +145,7 @@ const default_meta = {
 };
 export default {
     name: "publishPvp",
-    props: ["data", "client", "subtype"],
+    props: ["data", "client", "subtype", "isWujie"],
     components: {
         SkillDialog,
         "publish-qixue":publish_qixue,

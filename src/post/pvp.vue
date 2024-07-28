@@ -29,7 +29,7 @@
             </div>
 
             <!-- 技能区域 -->
-            <publish-pvp v-model="post.post_meta" :client="post.client" :subtype="post.post_subtype"> </publish-pvp>
+            <publish-pvp v-model="post.post_meta" :client="post.client" :subtype="post.post_subtype" :is-wujie="post.is_wujie"></publish-pvp>
 
             <!-- 正文 -->
             <div class="m-publish-content">
