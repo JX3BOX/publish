@@ -75,21 +75,11 @@
             <div class="m-publish-extraimg" v-show="extraImages.length">
                 <el-divider content-position="left">附图</el-divider>
                 <div class="u-imgs">
-                    <div
-                        :class="`u-imgs-item ${post.banner_img === item && 'active'}`"
-                        v-for="(item, i) in extraImages"
-                        :key="i"
-                        @click="setBannerIndex(item)"
-                        title="点击设置封面"
-                    >
+                    <div :class="`u-imgs-item`" v-for="(item, i) in extraImages" :key="i">
                         <el-image :src="item" fit="cover" style="width: 148px; height: 148px" />
                         <div class="u-mark">封面</div>
                     </div>
                 </div>
-            </div>
-
-            <div class="m-publish-other">
-                <publish-banner v-model="post.banner_img"></publish-banner>
             </div>
 
             <div class="m-publish-doc">
@@ -126,8 +116,8 @@ import publish_collection from "@/components/publish_collection";
 import publish_revision from "@/components/publish_revision.vue";
 import publish_category from "@/components/publish_category.vue";
 // import publish_client from "@/components/publish_client.vue";
-import publish_banner from "@/components/publish_banner";
-import publish_at_authors from "@/components/publish_at_authors.vue"
+
+import publish_at_authors from "@/components/publish_at_authors.vue";
 
 // 数据逻辑
 import { getTopicBucket } from "@/service/cms.js";
@@ -146,7 +136,6 @@ export default {
         "publish-revision": publish_revision,
         "publish-category": publish_category,
         // "publish-client": publish_client,
-        "publish-banner": publish_banner,
         "publish-at-authors": publish_at_authors,
     },
     data: function () {
@@ -171,8 +160,6 @@ export default {
                 // 内容
                 content: "",
 
-                // 海报
-                banner_img: "",
                 // 小册id
                 collection_id: "",
             },
@@ -260,14 +247,6 @@ export default {
             // 获取前100个字符，如果字符串长度小于200，则获取全部字符
             return withoutTags.slice(0, 200);
         },
-        setBannerIndex(img) {
-            // 设置封面
-            if (this.post.banner_img === img) {
-                this.post.banner_img = "";
-            } else {
-                this.post.banner_img = img;
-            }
-        },
         // 初始化
         init: function () {
             // 尝试加载
@@ -288,7 +267,6 @@ export default {
                     title: data.title,
                     content: data.content,
                     collection_id: data.collection_id,
-                    banner_img: data.banner_img,
                 };
                 this.getDecoration();
             });
@@ -321,7 +299,7 @@ export default {
                             type: "success",
                         });
 
-                        this.atUser(res.data.data.id)
+                        this.atUser(res.data.data.id);
                         // 跳转
                         setTimeout(() => {
                             location.href = `/community/${this.post.id || res.data.data.id}`;
@@ -355,26 +333,7 @@ export default {
             });
         },
     },
-    watch: {
-        extraImages: {
-            deep: true,
-            handler() {
-                if (this.extraImages.length) {
-                    if (!this.post.banner_img) {
-                        this.post.banner_img = this.extraImages[0];
-                    } else {
-                        const findData = this.extraImages.find((item) => item === this.post.banner_img);
-                        if (!findData) {
-                            this.post.banner_img = this.extraImages[0];
-                        }
-                    }
-                } else {
-                    // 附图被清空 banner_img 也要去掉
-                    this.post.banner_img = "";
-                }
-            },
-        },
-    },
+    watch: {},
 };
 </script>
 
