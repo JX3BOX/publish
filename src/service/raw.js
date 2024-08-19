@@ -11,8 +11,8 @@ function getSkills(params) {
     });
 }
 
-async function getTalents() {
-    let res = await $oss.get("talent/talents.json");
+async function getTalents(platform = "std") {
+    let res = await $oss.get(`talent/${platform}/talents.json`);
     return res.data;
 }
 

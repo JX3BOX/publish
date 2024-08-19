@@ -5,7 +5,15 @@
         <div class="m-macro-box">
             <div class="m-macro-talent m-macro-item">
                 <h5 class="u-title">技巧概述</h5>
-                <el-input v-model="pvpData.content" placeholder="请在此处输入技巧概述，最多200个字。" type="textarea" show-word-limit maxlength="200" :rows="5"> </el-input>
+                <el-input
+                    v-model="pvpData.content"
+                    placeholder="请在此处输入技巧概述，最多200个字。"
+                    type="textarea"
+                    show-word-limit
+                    maxlength="200"
+                    :rows="5"
+                >
+                </el-input>
             </div>
             <div class="m-macro-talent m-macro-item" v-if="client != 'origin'">
                 <!-- <el-input v-model="pvpData.talent" placeholder="奇穴方案编码" @change="checkTalent(pvpData.talent)">
@@ -35,7 +43,14 @@
 
             <div class="m-macro-talent m-macro-item" v-show="subtype !== '通用'">
                 <h5 class="u-title">{{ client === "std" ? "奇穴" : "镇派" }}讲解</h5>
-                <el-input v-model="pvpData.talent_desc" placeholder="输入内容（选填）" type="textarea" show-word-limit maxlength="400" :rows="4">
+                <el-input
+                    v-model="pvpData.talent_desc"
+                    placeholder="输入内容（选填）"
+                    type="textarea"
+                    show-word-limit
+                    maxlength="400"
+                    :rows="4"
+                >
                 </el-input>
             </div>
         </div>
@@ -97,7 +112,14 @@
                         >
                     </el-form-item>
                     <el-form-item label="连招说明" class="m-macro-desc">
-                        <el-input v-model="item.desc" type="textarea" maxlength="200" :rows="3"  show-word-limit placeholder="连招简要说明（选填）"></el-input>
+                        <el-input
+                            v-model="item.desc"
+                            type="textarea"
+                            maxlength="200"
+                            :rows="3"
+                            show-word-limit
+                            placeholder="连招简要说明（选填）"
+                        ></el-input>
                     </el-form-item>
                     <div class="m-macro-op">
                         <el-button
@@ -115,7 +137,12 @@
         </div>
         <slot></slot>
 
-        <skillDialog v-model="showSkillDialog" @submit="onSubmit" :subtype="subtype"></skillDialog>
+        <skillDialog
+            v-model="showSkillDialog"
+            @submit="onSubmit"
+            :platform="isWujie ? 'wujie' : 'std'"
+            :subtype="subtype"
+        ></skillDialog>
     </div>
 </template>
 
@@ -148,7 +175,7 @@ export default {
     props: ["data", "client", "subtype", "isWujie"],
     components: {
         SkillDialog,
-        "publish-qixue":publish_qixue,
+        "publish-qixue": publish_qixue,
     },
     data: function () {
         return {
@@ -302,7 +329,7 @@ export default {
                         onClick: () => {
                             this.$set(skill, "WithoutGcd", !skill.WithoutGcd);
                         },
-                        icon: !skill?.WithoutGcd ? "el-icon-check" : "el-icon-close"
+                        icon: !skill?.WithoutGcd ? "el-icon-check" : "el-icon-close",
                     },
                 ],
                 event,

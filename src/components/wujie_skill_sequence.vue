@@ -145,7 +145,7 @@
         </div>
         <slot></slot>
 
-        <publish-wujie-skill v-model="showSkillDialog" :subtype="subtype" @selected="onSelected"></publish-wujie-skill>
+        <publish-wujie-skill v-model="showSkillDialog" :subtype="subtype" platform="wujie" @selected="onSelected"></publish-wujie-skill>
     </div>
 </template>
 

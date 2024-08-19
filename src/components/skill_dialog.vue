@@ -87,7 +87,12 @@
 
                 <div class="m-database-tip" v-show="isBlank">❤ 请输入搜索条件查询</div>
             </div>
-            <pvp-martial v-show="activeName === 'special'" :subtype="subtype" @selectSkill="selectSkill"></pvp-martial>
+            <pvp-martial
+                v-show="activeName === 'special'"
+                :platform="platform"
+                :subtype="subtype"
+                @selectSkill="selectSkill"
+            ></pvp-martial>
         </div>
 
         <!-- 已选技能 -->
@@ -132,6 +137,10 @@ export default {
         subtype: {
             type: String,
             default: "通用",
+        },
+        platform: {
+            type: String,
+            default: "std",
         },
     },
     model: {
