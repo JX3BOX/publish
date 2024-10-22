@@ -8,7 +8,7 @@
                 :key="i"
                 v-show="item.client.includes(exact_client)"
             >
-                <img class="u-pic" :src="item.id | xficon" :alt="item.name" />
+                <img class="u-pic" :src="item.id | xficon" :alt="item.name" onerror="this.src='https://img.jx3box.com/image/xf/0.png'"/>
                 <span class="u-txt">{{ item.name }}</span>
             </el-radio>
         </el-form-item>

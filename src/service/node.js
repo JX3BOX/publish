@@ -27,3 +27,10 @@ function getMobileForceSkillList(force_id) {
 }
 
 export { getSkill, getSkillList, getMobileForceSkillList };
+
+
+export function getKungfuPanel(params) {
+    return $node().get("/v2/kungfu/panel", {
+        params,
+    });
+}

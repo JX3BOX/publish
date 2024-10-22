@@ -23,6 +23,7 @@ module.exports = {
 
     //❤️ Porxy ~
     devServer: {
+        host: "localhost",
         proxy: {
             "/api/plugins/my-team-mon":{
                 "target": "https://pull.jx3box.com",
