@@ -65,6 +65,17 @@
                 </publish-collection>
             </div>
 
+            <!-- 扩展 -->
+            <div class="m-publish-extend">
+                <el-divider content-position="left">设置</el-divider>
+                <el-form-item label="阅读权限">
+                    <el-radio-group v-model="post.is_self_visit">
+                        <el-radio label="0">公开</el-radio>
+                        <el-radio label="1">仅自己可见</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </div>
+
             <!-- 临时 -->
             <div class="m-publish-extend">
                 <el-divider content-position="left">临时</el-divider>
@@ -105,7 +116,7 @@ import { __imgPath } from "@jx3box/jx3box-common/data/jx3box.json";
 // 公共模块
 import community_types from "@/assets/data/community.json";
 
-import { push, pull, update } from "@/service/community.js";
+import { push, pull, update, setVisibility } from "@/service/community.js";
 
 // 本地模块
 import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";
@@ -115,8 +126,6 @@ import publish_title from "@/components/publish_title.vue";
 import publish_collection from "@/components/publish_collection";
 import publish_revision from "@/components/publish_revision.vue";
 import publish_category from "@/components/publish_category.vue";
-// import publish_client from "@/components/publish_client.vue";
-
 import publish_at_authors from "@/components/publish_at_authors.vue";
 
 // 数据逻辑
@@ -162,6 +171,8 @@ export default {
 
                 // 小册id
                 collection_id: "",
+
+                is_self_visit: "0",
             },
             currentDecorationId: "",
             // 选项
@@ -251,9 +262,6 @@ export default {
         init: function () {
             // 尝试加载
             sessionStorage.removeItem("atAuthor");
-            // return this.loadData().then(() => {
-            //     this.autoSave();
-            // });
             const id = this.$route.params.id;
             if (!id) {
                 this.getDecoration();
@@ -267,6 +275,7 @@ export default {
                     title: data.title,
                     content: data.content,
                     collection_id: data.collection_id,
+                    is_self_visit: String(data.is_self_visit),
                 };
                 this.getDecoration();
             });
@@ -283,6 +292,8 @@ export default {
                         });
 
                         this.atUser(this.data.id);
+                        // 设置可见性
+                        setVisibility(this.data.id, this.post.is_self_visit);
                         // 跳转
                         setTimeout(() => {
                             location.href = `/community/${this.post.id || res.data.data.id}`;
@@ -299,10 +310,14 @@ export default {
                             type: "success",
                         });
 
-                        this.atUser(res.data.data.id);
+                        const id = res.data.data.id;
+
+                        setVisibility(id, this.post.is_self_visit);
+
+                        this.atUser(id);
                         // 跳转
                         setTimeout(() => {
-                            location.href = `/community/${this.post.id || res.data.data.id}`;
+                            location.href = `/community/${this.post.id || id}`;
                         }, 500);
                     })
                     .finally(() => {

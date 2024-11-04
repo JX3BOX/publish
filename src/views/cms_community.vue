@@ -27,7 +27,6 @@
                 <li v-for="(item, i) in data" :key="i">
                     <i class="u-icon">
                         <img src="../assets/img/works/repo.svg" />
-                        <!-- <img v-else src="../assets/img/works/draft.svg" :title="item.post_status | statusFormat" /> -->
                     </i>
                     <a class="u-title" target="_blank" :href="postLink(item)">
                         <span v-if="activeTab == 'topic'">{{ item.title || item.content || "无标题" }}</span>
@@ -39,6 +38,10 @@
                         </div> -->
                     </a>
                     <div class="u-desc">
+                        <span class="u-desc-subitem">
+                            <i class="el-icon-view"></i>
+                            {{ item.is_self_visit | visibleFormat }}
+                        </span>
                         <time class="u-desc-subitem">
                             <i class="el-icon-finished"></i>
                             发布 :
@@ -88,6 +91,7 @@ import { getMyList, del, getMyReplyList, deleteMyReply } from "@/service/communi
 import dateFormat from "../utils/dateFormat";
 import statusMap from "@/assets/data/status.json";
 import { pick } from "lodash";
+import { __postType, __visibleMap } from "@jx3box/jx3box-common/data/jx3box.json";
 export default {
     name: "work",
     props: [],
@@ -264,11 +268,7 @@ export default {
         dateFormat: function (val) {
             return dateFormat(new Date(val));
         },
-        typeFormat: function (val) {
-            return __postType[val];
-        },
         visibleFormat: function (val) {
-            console.log(val);
             return __visibleMap[~~val];
         },
         statusFormat: function (val) {

@@ -25,6 +25,11 @@ function getAllCommunity(params) {
     return $next().get(`${API_PREFIX}/community/discussion/topic/list`, { params });
 }
 
+// 设置可见性
+function setVisibility(id, status) {
+    return $next().put(`${API_PREFIX}/community/discussion/my/topic/item/${id}/self-visit/${status}`);
+}
+
 // =============  我的回帖 =============
 
 // 获取回帖列表
@@ -63,6 +68,7 @@ export {
     push,
     getMyList,
     getAllCommunity,
+    setVisibility,
     del,
     pull,
     update,
