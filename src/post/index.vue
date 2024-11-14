@@ -15,8 +15,13 @@
         </h1>
         <el-alert type="warning" v-if="!isAuth">
             <template #title>
-                <span>应有关单位要求，现在需要进行账号认证后才可执行“发布”操作，</span>
-                【<a href="/dashboard/auth">前往认证</a>】
+                <div class="m-index-warning">
+                    <span
+                        ><i class="el-icon-warning-outline"></i>
+                        应有关单位要求，现在需要进行账号认证后才可执行“发布”操作，</span
+                    >
+                    <a href="/dashboard/auth"><i class="el-icon-link"></i>前往认证</a>
+                </div>
             </template>
         </el-alert>
         <div class="u-nav">
@@ -187,13 +192,15 @@ export default {
     data: function () {
         return {
             isAdmin: User.isAdmin(),
-            profile: {}
+            profile: {},
         };
     },
     computed: {
         isAuth() {
-            return !!this.profile.wechat_mp_openid || !!this.profile.wechat_miniprogram_openid || !!this.profile.user_phone
-        }
+            return (
+                !!this.profile.wechat_mp_openid || !!this.profile.wechat_miniprogram_openid || !!this.profile.user_phone
+            );
+        },
     },
     methods: {
         getAppIcon,
@@ -201,11 +208,11 @@ export default {
             getUserInfo().then((res) => {
                 this.profile = res?.data?.data;
             });
-        }
+        },
     },
     mounted() {
         this.loadUser();
-    }
+    },
 };
 </script>
 
