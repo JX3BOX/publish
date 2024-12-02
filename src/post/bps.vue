@@ -88,6 +88,7 @@
             </div>
 
             <div class="m-publish-doc">
+                <el-alert class="u-illegal-alert" v-if="is_illegal" :closable="false" show-icon type="warning" title="检测到您的内容存在不合规，将无法发布成功，并有禁言风险。"></el-alert>
                 <el-checkbox v-model="hasRead" :true-label="1" :false-label="0"
                     >我已阅读并了解<a href="/notice/119" @click.stop target="_blank">《创作发布规范》</a></el-checkbox
                 >
@@ -115,7 +116,6 @@
 // 公共模块
 import { getLink } from "@jx3box/jx3box-common/js/utils";
 import { bps_pve, bps_pvp } from "@jx3box/jx3box-common/data/post_topics.json";
-import User from "@jx3box/jx3box-common/js/user.js";
 
 // 本地模块
 import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";

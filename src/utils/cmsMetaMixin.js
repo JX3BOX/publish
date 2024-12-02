@@ -6,7 +6,10 @@ export const cmsMetaMixin = {
 
             open_white_list: 0,
             visible_for_self: 0,
-            from: ""
+            from: "",
+
+            // 是否违规
+            is_illegal: false,
         };
     },
     mounted: function() {
@@ -41,6 +44,14 @@ export const cmsMetaMixin = {
             // img左右可能是转义符 &lt;img&gt; 或者 <img>
             return content.replace(/(&lt;|<)img[^>]*?src="data:image[^>]*?(&gt;|>)/gi, "");
         },
+        isExtraLink(url) {
+            // 除了相对路径和*.jx3box.com都是外链
+            if (!url) return false;
+            if (url.startsWith("/")) return false;
+            const domainPattern = /^https?:\/\/([^\/]+\.)?jx3box\.com/;
+            if (domainPattern.test(url)) return false;
+            return true;
+        }
     },
     created: function() {
         // 根据访问域名设置默认客户端版本
@@ -62,6 +73,40 @@ export const cmsMetaMixin = {
                     this.post.post_mode = mode || "tinymce";
                 }
             },
-        }
+        },
+        "post.post_content": {
+            handler: function(val) {
+                // 统计外链数量
+                let count = 0;
+                let links = val.match(/(https?:\/\/[^\s]+)/g);
+                if (links) {
+                    for (let link of links) {
+                        if (this.isExtraLink(link)) {
+                            count++;
+                        }
+                    }
+                }
+
+                // 如果外链数量大于5，标记为违规
+                this.is_illegal = count >= 5;
+            }
+        },
+        "post.content": {
+            handler: function(val) {
+                // 统计外链数量
+                let count = 0;
+                let links = val.match(/(https?:\/\/[^\s]+)/g);
+                if (links) {
+                    for (let link of links) {
+                        if (this.isExtraLink(link)) {
+                            count++;
+                        }
+                    }
+                }
+
+                // 如果外链数量大于5，标记为违规
+                this.is_illegal = count >= 5;
+            }
+        },
     },
 };
