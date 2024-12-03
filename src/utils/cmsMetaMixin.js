@@ -78,7 +78,9 @@ export const cmsMetaMixin = {
             handler: function(val) {
                 // 统计外链数量
                 let count = 0;
-                let links = val.match(/(https?:\/\/[^\s]+)/g);
+                const regex = /(?:https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[a-zA-Z0-9._~:\/?#[\]@!$&'()*+,;=-]*)?/gm;
+
+                let links = val.match(regex);
                 if (links) {
                     for (let link of links) {
                         if (this.isExtraLink(link)) {
@@ -95,7 +97,9 @@ export const cmsMetaMixin = {
             handler: function(val) {
                 // 统计外链数量
                 let count = 0;
-                let links = val.match(/(https?:\/\/[^\s]+)/g);
+                const regex = /(?:https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[a-zA-Z0-9._~:\/?#[\]@!$&'()*+,;=-]*)?/gm;
+
+                let links = val.match(regex);
                 if (links) {
                     for (let link of links) {
                         if (this.isExtraLink(link)) {

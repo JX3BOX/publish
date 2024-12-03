@@ -174,6 +174,8 @@ export default {
                 collection_id: "",
 
                 is_self_visit: "0",
+
+                is_from_phone: 0
             },
             currentDecorationId: "",
             // 选项
@@ -213,6 +215,11 @@ export default {
             this.loadCommentConfig("community", id);
         }
         this.post.client = "all";
+
+        // 判断提交是否来自手机
+        if (window.navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)) {
+            this.post.is_from_phone = 1;
+        }
     },
     methods: {
         goShopping(e) {
