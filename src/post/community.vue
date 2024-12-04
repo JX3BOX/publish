@@ -87,7 +87,7 @@
                 <el-divider content-position="left">附图</el-divider>
                 <div class="u-imgs">
                     <div :class="`u-imgs-item`" v-for="(item, i) in extraImages" :key="i">
-                        <el-image :src="item" fit="cover" style="width: 148px; height: 148px" />
+                        <el-image :src="item" fit="cover" style="width: 148px; height: 148px" :preview-src-list="[item]" />
                         <div class="u-mark">封面</div>
                     </div>
                 </div>
@@ -117,7 +117,7 @@ import { __imgPath } from "@jx3box/jx3box-common/data/jx3box.json";
 // 公共模块
 import community_types from "@/assets/data/community.json";
 
-import { push, pull, update, setVisibility } from "@/service/community.js";
+import { push, pull, update, setVisibility, pullAdmin, updateAdmin } from "@/service/community.js";
 
 // 本地模块
 import Tinymce from "@jx3box/jx3box-editor/src/Tinymce";
@@ -184,14 +184,15 @@ export default {
             buckets: [],
 
             post_type: "community",
+            extraImages: [],
         };
     },
     computed: {
-        extraImages() {
-            const imgs = this.getImgSrc(this.post.content);
+        // extraImages() {
+        //     const imgs = this.getImgSrc(this.post.content);
 
-            return [...new Set(imgs)];
-        },
+        //     return [...new Set(imgs)];
+        // },
 
         id: function () {
             return ~~this.post.id;
@@ -217,7 +218,7 @@ export default {
         this.post.client = "all";
 
         // 判断提交是否来自手机
-        if (window.navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)) {
+        if (window.navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i) && !this.post.is_from_phone) {
             this.post.is_from_phone = 1;
         }
     },
@@ -275,7 +276,8 @@ export default {
                 this.getDecoration();
                 return;
             }
-            pull(id).then((res) => {
+            const fn = this.from === 'admin' ? pullAdmin : pull;
+            fn(id).then((res) => {
                 const data = res.data.data;
                 this.currentDecorationId = data.decoration_id;
                 this.post = {
@@ -292,7 +294,8 @@ export default {
         publish: function () {
             this.loading = true;
             if (this.data.id) {
-                update(this.data.id, this.data)
+                const fn = this.from === 'admin' ? updateAdmin : update;
+                fn(this.data.id, this.data)
                     .then((res) => {
                         this.$message({
                             message: "更新成功",
@@ -356,7 +359,16 @@ export default {
             });
         },
     },
-    watch: {},
+    watch: {
+        'post.content': {
+            handler: function (val) {
+                const imgs = this.getImgSrc(val);
+
+                this.extraImages = [...new Set(imgs)];
+            },
+            immediate: true,
+        }
+    },
 };
 </script>
 

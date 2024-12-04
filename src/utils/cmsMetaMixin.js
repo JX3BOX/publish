@@ -14,11 +14,6 @@ export const cmsMetaMixin = {
     },
     mounted: function() {
         this.initExtend();
-
-        const from = this.$route.query?.from;
-        if (from) {
-            this.from = from;
-        }
     },
     methods: {
         initExtend() {
@@ -62,6 +57,10 @@ export const cmsMetaMixin = {
             immediate: true,
             deep: true,
             handler() {
+                const from = this.$route.query?.from;
+                if (from) {
+                    this.from = from;
+                }
                 this.init();
             },
         },

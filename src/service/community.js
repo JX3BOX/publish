@@ -10,6 +10,10 @@ function update(id, params) {
     return $next().put(`${API_PREFIX}/community/discussion/my/topic/item/${id}`, params);
 }
 
+function updateAdmin(id, params) {
+    return $next().put(`${API_PREFIX}/community/discussion/manage/topic/item/${id}/update`, params);
+}
+
 function getMyList(params) {
     return $next().get(`${API_PREFIX}/community/discussion/my/topic/list`, { params });
 }
@@ -19,6 +23,10 @@ function del(id) {
 
 function pull(id) {
     return $next().get(`${API_PREFIX}/community/discussion/my/topic/item/${id}`);
+}
+
+function pullAdmin(id) {
+    return $next().get(`${API_PREFIX}/community/discussion/manage/topic/item/${id}`);
 }
 
 function getAllCommunity(params) {
@@ -78,4 +86,7 @@ export {
     updateMyReply,
     getMyCommentList,
     deleteMyComment,
+
+    pullAdmin,
+    updateAdmin,
 };
