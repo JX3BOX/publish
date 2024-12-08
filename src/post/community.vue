@@ -134,6 +134,7 @@ import { getTopicBucket } from "@/service/cms.js";
 import { cmsMetaMixin } from "@/utils/cmsMetaMixin";
 import { atAuthorMixin } from "@/utils/atAuthorMixin";
 import { getDecoration } from "@jx3box/jx3box-common-ui/service/cms";
+import { appendToCollection } from "@/service/collection.js";
 
 export default {
     name: "community",
@@ -305,17 +306,25 @@ export default {
                         this.atUser(this.data.id);
                         // 设置可见性
                         setVisibility(this.data.id, this.post.is_self_visit);
-                        // 跳转
+
+                    }).then(() => {
+                        this.afterPublish({
+                            id: this.data.id,
+                            collection_id: this.data.collection_id,
+                            title: this.data.title,
+                        }).then(() => {
+                            // 跳转
                         setTimeout(() => {
-                            location.href = `/community/${this.post.id || res.data.data.id}`;
+                            location.href = `/community/${this.post.id}`;
                         }, 500);
-                    })
-                    .finally(() => {
+                        })
+                    }).finally(() => {
                         this.loading = false;
                     });
             } else {
                 push(this.data)
                     .then((res) => {
+                        const result = res.data.data
                         this.$message({
                             message: "发布成功",
                             type: "success",
@@ -326,12 +335,16 @@ export default {
                         setVisibility(id, this.post.is_self_visit);
 
                         this.atUser(id);
+
+                        return result;
                         // 跳转
-                        setTimeout(() => {
-                            location.href = `/community/${this.post.id || id}`;
-                        }, 500);
-                    })
-                    .finally(() => {
+                    }).then(result => {
+                        this.afterPublish(result).then(() => {
+                            setTimeout(() => {
+                                location.href = `/community/${result.id}`;
+                            }, 500);
+                        })
+                    }).finally(() => {
                         this.loading = false;
                     });
             }
@@ -356,6 +369,20 @@ export default {
             getTopicBucket({ type: "community" }).then((res) => {
                 const data = res.data.data;
                 this.tags = [...data];
+            });
+        },
+        // 跳转前操作
+        afterPublish: function (result) {
+            if (!~~result.collection_id) {
+                return new Promise((resolve, reject) => {
+                    resolve(true);
+                });
+            }
+            return appendToCollection({
+                post_type: 'community',
+                post_id: result.id,
+                post_collection: result.collection_id,
+                post_title: result.title,
             });
         },
     },
