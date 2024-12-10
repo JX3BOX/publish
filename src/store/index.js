@@ -10,6 +10,7 @@ let store = {
         user_conf : {
             editor_mode : 'tinymce'
         },
+        profile: {}
     },
     mutations: {
         switchClient : function (state,val){
@@ -22,6 +23,9 @@ let store = {
             state.user_conf = val || {
                 editor_mode : 'tinymce'
             }
+        },
+        setProfile : (state,val) => {
+            state.profile = val || {}
         }
     },
     getters: {},

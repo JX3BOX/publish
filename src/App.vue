@@ -17,7 +17,7 @@
 import Nav from "@/components/Nav.vue";
 import User from "@jx3box/jx3box-common/js/user";
 import LocalDraft from "@/utils/localDraft";
-import { getUserConf } from "@/service/user.js";
+import { getUserConf, getUserInfo } from "@/service/user.js";
 export default {
     name: "publish",
     props: [],
@@ -40,6 +40,10 @@ export default {
             // 用户偏好
             this.loadUserConf();
 
+            // 用户信息
+            getUserInfo().then((res) => {
+                this.$store.commit("setProfile", res?.data?.data);
+            });
         },
     },
     created: function() {

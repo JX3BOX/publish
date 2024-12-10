@@ -1,4 +1,5 @@
 import {setCommentConfig, getCommentConfig, setCommentVisible} from "@/service/next"
+import User from "@jx3box/jx3box-common/js/user";
 export const cmsMetaMixin = {
     data: function() {
         return {
@@ -14,6 +15,14 @@ export const cmsMetaMixin = {
     },
     mounted: function() {
         this.initExtend();
+    },
+    computed: {
+        profile() {
+            return this.$store.state.profile;
+        },
+        level() {
+            return User.getLevel(this.profile?.experience)
+        }
     },
     methods: {
         initExtend() {
@@ -75,6 +84,10 @@ export const cmsMetaMixin = {
         },
         "post.post_content": {
             handler: function(val) {
+                if (this.level > 2) {
+                    this.is_illegal = false;
+                    return
+                }
                 // 统计外链数量
                 let count = 0;
                 const regex = /(?:https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[a-zA-Z0-9._~:\/?#[\]@!$&'()*+,;=-]*)?/gm;
@@ -94,6 +107,10 @@ export const cmsMetaMixin = {
         },
         "post.content": {
             handler: function(val) {
+                if (this.level > 2) {
+                    this.is_illegal = false;
+                    return
+                }
                 // 统计外链数量
                 let count = 0;
                 const regex = /(?:https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[a-zA-Z0-9._~:\/?#[\]@!$&'()*+,;=-]*)?/gm;

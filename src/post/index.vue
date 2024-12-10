@@ -185,17 +185,18 @@
 <script>
 import User from "@jx3box/jx3box-common/js/user";
 import { getAppIcon } from "@jx3box/jx3box-common/js/utils.js";
-import { getUserInfo } from "@/service/user.js";
 export default {
     name: "index",
     props: [],
     data: function () {
         return {
             isAdmin: User.isAdmin(),
-            profile: {},
         };
     },
     computed: {
+        profile() {
+            return this.$store.state.profile;
+        },
         isAuth() {
             return (
                 !!this.profile.wechat_mp_openid || !!this.profile.wechat_miniprogram_openid || !!this.profile.user_phone
@@ -204,14 +205,6 @@ export default {
     },
     methods: {
         getAppIcon,
-        loadUser() {
-            getUserInfo().then((res) => {
-                this.profile = res?.data?.data;
-            });
-        },
-    },
-    mounted() {
-        this.loadUser();
     },
 };
 </script>
