@@ -12,8 +12,8 @@
     },
     "dependencies": {
         "@jx3box/jx3box-common": "^8.5.3",
-        "@jx3box/jx3box-common-ui": "^9.0.15",
-        "@jx3box/jx3box-data": "^3.7.2",
+        "@jx3box/jx3box-common-ui": "^9.0.16",
+        "@jx3box/jx3box-data": "^3.7.3",
         "@jx3box/jx3box-editor": "^2.2.18",
         "@jx3box/jx3box-emotion": "^1.2.8",
         "@jx3box/jx3box-facedat": "^2.6.2",
