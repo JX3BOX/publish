@@ -31,7 +31,7 @@
         </el-form-item>
 
         <!-- 选择BOSS -->
-        <el-form-item label="首领名称" v-if="boss_list">
+        <el-form-item :label="fbdata.fb_name == '剑踪幻域' ? '秘境名称' : '首领名称'" v-if="boss_list">
             <div class="u-boss-list">
                 <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
                     全部

@@ -10,6 +10,14 @@
             </h1>
             <div class="u-op">
                 <el-button plain icon="el-icon-delete" size="small" @click="clean" :disabled="!isNotNull">清空</el-button>
+                <el-dropdown class="u-dropdown" trigger="click" @command="handleCommand">
+                    <el-button size="small" type="primary" :disabled="!canBatchOperate">
+                        批量操作<i class="el-icon-arrow-down el-icon--right"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="batchDel">批量删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </div>
         </div>
         <template v-if="isSupported">
@@ -17,6 +25,7 @@
                 <ul class="u-list">
                     <li class="u-item" v-for="(item, i) in data" :key="i">
                         <div class="u-label" :class="{ on: !!item.active }">
+                            <el-checkbox class="u-checkbox" label="" v-model="item.checked"></el-checkbox>
                             <!-- <i class="u-item-icon" :class="!!item.active ? 'el-icon-folder-opened' : 'el-icon-folder'"></i> -->
                             <i class="u-item-icon el-icon-document"></i>
                             <span class="u-item-key">{{ item | itemName }} <em class="u-item-time" v-if="item.data.cache_time">( {{ item | formatDate }} )</em></span>
@@ -64,20 +73,27 @@ export default {
         db() {
             return this.$store.state.db;
         },
+        canBatchOperate() {
+            return this.data.some((item) => item.checked);
+        },
     },
     methods: {
         // 加载
         loadDrafts: async function() {
             let len = await this.db.length();
+            const data = [];
             for (let i = 0; i < len; i++) {
                 let key = await this.db.key(i);
                 // if (key.startsWith(DRAFT_PREFIX)) {
-                this.data.push({
+                data.push({
                     key,
                     data: await this.db.getItem(key),
+                    checked: false,
                 });
                 // }
             }
+
+            this.$set(this, "data", data);
         },
         // 清空
         clean: function() {
@@ -120,6 +136,31 @@ export default {
                 title: "复制失败",
                 message: "请手动复制",
             });
+        },
+
+        handleCommand: function(command) {
+            switch (command) {
+                case "batchDel":
+                    this.$confirm("此操作不可逆！请谨慎操作！", "警告", {
+                        confirmButtonText: "确定删除",
+                        cancelButtonText: "取消",
+                        type: "warning",
+                    }).then(() => {
+                        let delList = this.data.filter((item) => item.checked);
+                        delList.forEach((item) => {
+                            this.db.removeItem(item.key);
+                        });
+                        this.data = this.data.filter((item) => !item.checked);
+                        this.$notify({
+                            title: "删除成功",
+                            type: "success",
+                            message: `成功删除${delList.length}个草稿`,
+                        });
+                    });
+                    break;
+                default:
+                    break;
+            }
         },
     },
     filters: {
