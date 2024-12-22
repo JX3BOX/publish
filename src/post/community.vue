@@ -353,7 +353,7 @@ export default {
         },
         getImgSrc: function (htmlString) {
             // 创建一个正则表达式来匹配没有class属性的<img>标签，并且捕获src属性的值
-            const imgSrcRegex = /<img\s+(?![^>]*\bclass\b)[^>]*src="([^"]*)"/g;
+            const imgSrcRegex = /<img\s+(?![^>]*\bclass\b)[^>]*?src="([^"]*)"/g;
             let matches;
             const imgSrcs = [];
 
