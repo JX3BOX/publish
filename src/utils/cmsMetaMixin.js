@@ -55,6 +55,27 @@ export const cmsMetaMixin = {
             const domainPattern = /^https?:\/\/([^\/]+\.)?jx3box\.com/;
             if (domainPattern.test(url)) return false;
             return true;
+        },
+        checkIllegal(val) {
+            if (this.level > 2) {
+                this.is_illegal = false;
+                return
+            }
+            // 统计外链数量
+            let count = 0;
+            const regex = /(?:https?:)?\/\/([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[a-zA-Z0-9._~:\/?#[\]@!$&'()*+,;=-]*)?/gm;
+
+            let links = val.match(regex);
+            if (links) {
+                for (let link of links) {
+                    if (this.isExtraLink(link)) {
+                        count++;
+                    }
+                }
+            }
+
+            // 如果外链数量大于5，标记为违规
+            this.is_illegal = count >= 5;
         }
     },
     created: function() {
@@ -84,48 +105,12 @@ export const cmsMetaMixin = {
         },
         "post.post_content": {
             handler: function(val) {
-                if (this.level > 2) {
-                    this.is_illegal = false;
-                    return
-                }
-                // 统计外链数量
-                let count = 0;
-                const regex = /(?:https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[a-zA-Z0-9._~:\/?#[\]@!$&'()*+,;=-]*)?/gm;
-
-                let links = val.match(regex);
-                if (links) {
-                    for (let link of links) {
-                        if (this.isExtraLink(link)) {
-                            count++;
-                        }
-                    }
-                }
-
-                // 如果外链数量大于5，标记为违规
-                this.is_illegal = count >= 5;
+                this.checkIllegal(val);
             }
         },
         "post.content": {
             handler: function(val) {
-                if (this.level > 2) {
-                    this.is_illegal = false;
-                    return
-                }
-                // 统计外链数量
-                let count = 0;
-                const regex = /(?:https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})(\/[a-zA-Z0-9._~:\/?#[\]@!$&'()*+,;=-]*)?/gm;
-
-                let links = val.match(regex);
-                if (links) {
-                    for (let link of links) {
-                        if (this.isExtraLink(link)) {
-                            count++;
-                        }
-                    }
-                }
-
-                // 如果外链数量大于5，标记为违规
-                this.is_illegal = count >= 5;
+                this.checkIllegal(val);
             }
         },
     },
