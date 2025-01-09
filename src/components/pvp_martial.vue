@@ -7,7 +7,7 @@
             </div>
             <div class="m-skills">
                 <div class="m-skill" v-for="(panel_item, i) in kungfu" :key="i" @click="selectSkill(panel_item.skill)">
-                    <div class="u-skill" v-if="panel_item.skill && panel_item.skill?.IconID">
+                    <div class="u-skill" v-if="panel_item.skill && panel_item.skill.IconID">
                         <img
                             :class="{ 'is-wujie': panel_item.skill.IconID > 100000 }"
                             class="u-skill-icon"
