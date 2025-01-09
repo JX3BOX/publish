@@ -7,7 +7,7 @@
                 <el-radio label="2">仅亲友可见</el-radio>
                 <el-radio label="3" disabled>密码可见</el-radio>
                 <el-radio label="4" disabled>付费可见</el-radio>
-                <el-radio label="5" disabled>粉丝可见</el-radio>
+                <el-radio label="5">粉丝可见</el-radio>
             </el-radio-group>
         </el-form-item>
     </div>
