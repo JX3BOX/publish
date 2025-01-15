@@ -72,6 +72,11 @@ function deleteMyComment(id) {
     return $next().delete(`${API_PREFIX}/community/discussion/my/comment/item/${id}`);
 }
 
+// ==================== 帖子阅读记录 ====================
+function getReadingHistory(id ,params) {
+    return $next().get(`${API_PREFIX}/userdata/communicate/${id}/visit-history`, { params });
+}
+
 export {
     push,
     getMyList,
@@ -89,4 +94,6 @@ export {
 
     pullAdmin,
     updateAdmin,
+
+    getReadingHistory
 };

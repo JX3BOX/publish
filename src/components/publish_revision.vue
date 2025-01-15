@@ -59,10 +59,6 @@ export default {
             type: [String, Number],
             default: 0,
         },
-        visible: {
-            type: Boolean,
-            default: true,
-        },
         enable: {
             type: Boolean,
             default: false,
@@ -246,8 +242,8 @@ export default {
 
 <style lang="less">
 .m-revision {
-    .pa;
-    .rt(0);
+    // .pa;
+    // .rt(0);
 }
 .m-revision-drawer {
     .size(100%);

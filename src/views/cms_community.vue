@@ -40,7 +40,7 @@
                     <div class="u-desc">
                         <span class="u-desc-subitem">
                             <i class="el-icon-view"></i>
-                            {{ item.is_self_visit | visibleFormat }}
+                            {{ (item.is_self_visit || item.visible) | visibleFormat }}
                         </span>
                         <time class="u-desc-subitem">
                             <i class="el-icon-finished"></i>

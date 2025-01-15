@@ -30,8 +30,11 @@ export default {
 </script>
 
 <style lang="less">
-    .m-publish-header{
-        .pr;
-    }
-    
+.m-publish-header{
+    .pr;
+    .flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 </style>

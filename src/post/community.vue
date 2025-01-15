@@ -2,7 +2,10 @@
     <div class="m-publish-box p-community" v-loading="loading">
         <!-- 头部 -->
         <publish-header name="魔盒论坛">
-            <publish-revision :enable="true" :post-id="id"></publish-revision>
+            <div class="u-actions">
+                <publish-revision :enable="true" :post-id="id"></publish-revision>
+                <publish-reading-history :post-id="id"></publish-reading-history>
+            </div>
         </publish-header>
 
         <el-form label-position="left" label-width="80px">
@@ -69,10 +72,17 @@
             <div class="m-publish-extend">
                 <el-divider content-position="left">设置</el-divider>
                 <el-form-item label="阅读权限">
-                    <el-radio-group v-model="post.is_self_visit">
-                        <el-radio label="0">公开</el-radio>
-                        <el-radio label="1">仅自己可见</el-radio>
+                    <el-radio-group v-model="post.visible">
+                        <el-radio :label="0">公开</el-radio>
+                        <el-radio :label="1">仅自己可见</el-radio>
+                        <el-radio :label="2">仅亲友可见</el-radio>
+                        <el-radio :label="3">密码可见</el-radio>
+                        <!-- <el-radio label="4" disabled>付费可见</el-radio> -->
+                        <el-radio :label="5">粉丝可见</el-radio>
                     </el-radio-group>
+                </el-form-item>
+                <el-form-item label="密码" v-if="post.visible == 3">
+                    <el-input v-model="post.password" placeholder="请输入密码" />
                 </el-form-item>
             </div>
 
@@ -128,6 +138,7 @@ import publish_collection from "@/components/publish_collection";
 import publish_revision from "@/components/publish_revision.vue";
 import publish_category from "@/components/publish_category.vue";
 import publish_at_authors from "@/components/publish_at_authors.vue";
+import publish_reading_history from "@/components/publish_reading_history.vue";
 
 // 数据逻辑
 import { getTopicBucket } from "@/service/cms.js";
@@ -148,6 +159,7 @@ export default {
         "publish-category": publish_category,
         // "publish-client": publish_client,
         "publish-at-authors": publish_at_authors,
+        "publish-reading-history": publish_reading_history,
     },
     data: function () {
         return {
@@ -174,7 +186,8 @@ export default {
                 // 小册id
                 collection_id: "",
 
-                is_self_visit: "0",
+                visible: 0,
+                password: "",
 
                 is_from_phone: 0
             },
@@ -286,7 +299,6 @@ export default {
                     title: data.title,
                     content: data.content,
                     collection_id: data.collection_id,
-                    is_self_visit: String(data.is_self_visit),
                 };
                 this.getDecoration();
             });
@@ -400,6 +412,12 @@ export default {
 </script>
 
 <style lang="less">
+.p-community {
+    .u-actions {
+        .flex;
+        gap: 10px;
+    }
+}
 .m-publish-extraimg {
     .u-buy {
         margin-left: 10px;

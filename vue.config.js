@@ -54,7 +54,7 @@ module.exports = {
                 // target: "https://cms.jx3box.com"
             },
             "/api": {
-                "target": "https://dev.next2.jx3box.com",
+                "target": "https://next2.jx3box.com",
                 "onProxyReq": function (request) {
                     request.setHeader("origin", "");
                 }
