@@ -10,10 +10,10 @@
                         <li class="m-history-item" v-for="(item, i) in data" :key="i">
                             <span class="u-name">
                                 <i class="u-icon el-icon-tickets"></i>
-                                <span class="u-creator" v-if="item.user_info" title="创建人">
+                                <a :href="authorLink(item.user_info.id)" class="u-creator" v-if="item.user_info" title="创建人">
                                     <img class="u-avatar" :src="showAvatar(item.user_info.avatar)" />
                                     {{ item.user_info.display_name }}
-                                </span>
+                                </a>
                                 <em class="u-time">{{ item.created_at  }} 访问了此帖</em>
                             </span>
                         </li>
@@ -29,7 +29,7 @@
                         ></el-pagination>
                     </ul>
 
-                    <el-alert class="u-null" v-else title="当前没有任何历史版本" type="info" show-icon></el-alert>
+                    <el-alert class="u-null" v-else title="当前没有任何阅读记录" type="info" show-icon></el-alert>
                 </div>
             </main>
         </el-drawer>
@@ -38,13 +38,21 @@
 
 <script>
 import { getReadingHistory } from "@/service/community";
-import { showAvatar } from "@jx3box/jx3box-common/js/utils";
+import { showAvatar, authorLink } from "@jx3box/jx3box-common/js/utils";
 export default {
     name: "publish_reading_history",
     props: {
         postId: {
             type: [String, Number],
             default: 0,
+        },
+        category: {
+            type: String,
+            default: "posts",
+        },
+        subcategory: {
+            type: String,
+            default: "default",
         },
     },
     data() {
@@ -73,12 +81,20 @@ export default {
             this.loadList();
         },
         showAvatar,
+        authorLink,
         loadList() {
             this.loading = true;
 
-            getReadingHistory(this.postId, this.params)
+            const data = {
+                id: this.postId,
+                category: this.category,
+                subcategory: this.subcategory,
+            }
+
+            getReadingHistory(data, this.params)
                 .then((res) => {
-                    this.data = res.data.data.list;
+                    this.data = res.data.data.list || [];
+                    this.total = res.data.data.total || 0;
                 })
                 .finally(() => {
                     this.loading = false;

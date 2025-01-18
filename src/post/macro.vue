@@ -2,7 +2,10 @@
     <div class="m-publish-box p-publish-macro" v-loading="loading">
         <!-- 头部 -->
         <publish-header name="云端宏">
-            <publish-revision :enable="true" :post-id="id"></publish-revision>
+            <div class="u-actions">
+                <publish-revision :enable="true" :post-id="id"></publish-revision>
+                <publish-reading-history v-if="id" :post-id="id" category="posts"></publish-reading-history>
+            </div>
         </publish-header>
         <span v-html="macro_publish_ac" v-if="macro_publish_ac"></span>
 
@@ -153,6 +156,7 @@ import publish_at_authors from "@/components/publish_at_authors.vue";
 import pz_haste from "@/components/pz_haste.vue";
 import publish_guide from "@/components/publish_guide.vue";
 import publish_wujie from "@/components/publish_wujie.vue";
+import publish_reading_history from "@/components/publish_reading_history.vue";
 
 // 数据逻辑
 import { push, pushAdmin, getBreadCrumb } from "@/service/cms.js";
@@ -190,6 +194,7 @@ export default {
         "publish-guide": publish_guide,
         "publish-wujie": publish_wujie,
         "wujie-skill-sequence": wujie_skill_sequence,
+        "publish-reading-history": publish_reading_history,
     },
     data: function () {
         return {

@@ -2,7 +2,10 @@
     <div class="m-publish-box" v-loading="loading">
         <!-- 头部 -->
         <publish-header name="工具资源">
-            <publish-revision :enable="true" :post-id="id"></publish-revision>
+            <div class="u-actions">
+                <publish-revision :enable="true" :post-id="id"></publish-revision>
+                <publish-reading-history v-if="id" :post-id="id" category="posts"></publish-reading-history>
+            </div>
         </publish-header>
 
         <el-form label-position="left" label-width="80px">
@@ -139,6 +142,7 @@ import publish_revision from "@/components/publish_revision.vue";
 import publish_at_authors from "@/components/publish_at_authors.vue";
 import publish_tool_source from "@/components/publish_tool_source.vue";
 import publish_guide from "@/components/publish_guide.vue";
+import publish_reading_history from "@/components/publish_reading_history.vue";
 
 // 数据逻辑
 import { push, pushAdmin } from "@/service/cms.js";
@@ -170,6 +174,7 @@ export default {
         "publish-at-authors": publish_at_authors,
         "publish-tool-source": publish_tool_source,
         "publish-guide": publish_guide,
+        "publish-reading-history": publish_reading_history,
     },
     data: function () {
         return {

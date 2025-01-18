@@ -4,7 +4,7 @@
         <publish-header name="魔盒论坛">
             <div class="u-actions">
                 <publish-revision :enable="true" :post-id="id"></publish-revision>
-                <publish-reading-history :post-id="id"></publish-reading-history>
+                <publish-reading-history v-if="id" :post-id="id" category="communicate"></publish-reading-history>
             </div>
         </publish-header>
 
@@ -317,7 +317,7 @@ export default {
 
                         this.atUser(this.data.id);
                         // 设置可见性
-                        setVisibility(this.data.id, this.post.is_self_visit);
+                        // setVisibility(this.data.id, this.post.is_self_visit);
 
                     }).then(() => {
                         this.afterPublish({
@@ -344,7 +344,7 @@ export default {
 
                         const id = res.data.data.id;
 
-                        setVisibility(id, this.post.is_self_visit);
+                        // setVisibility(id, this.post.is_self_visit);
 
                         this.atUser(id);
 

@@ -2,7 +2,10 @@
     <div class="m-publish-box" v-loading="loading">
         <!-- 头部 -->
         <publish-header name="职业攻略">
-            <publish-revision :enable="true" :post-id="id"></publish-revision>
+            <div class="u-actions">
+                <publish-revision :enable="true" :post-id="id"></publish-revision>
+                <publish-reading-history v-if="id" :post-id="id" category="posts"></publish-reading-history>
+            </div>
         </publish-header>
 
         <el-form label-position="left" label-width="80px">
@@ -140,6 +143,7 @@ import publish_changelog from "@/components/publish_changelog.vue";
 import publish_guide from "@/components/publish_guide.vue";
 import publish_mix_subtype from "@/components/publish_mix_subtype.vue";
 import publish_wujie from "@/components/publish_wujie.vue";
+import publish_reading_history from "@/components/publish_reading_history.vue";
 
 // 数据逻辑
 import { push, pull, setPostMeta, pushAdmin } from "@/service/cms.js";
@@ -174,6 +178,7 @@ export default {
         "publish-guide": publish_guide,
         "publish-mix-subtype": publish_mix_subtype,
         "publish-wujie": publish_wujie,
+        "publish-reading-history": publish_reading_history,
     },
     data: function () {
         return {

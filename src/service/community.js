@@ -73,8 +73,9 @@ function deleteMyComment(id) {
 }
 
 // ==================== 帖子阅读记录 ====================
-function getReadingHistory(id ,params) {
-    return $next().get(`${API_PREFIX}/userdata/communicate/${id}/visit-history`, { params });
+function getReadingHistory(data, params) {
+    const { id, category, subcategory = "default" } = data;
+    return $next().get(`${API_PREFIX}/userdata/common-read-history/${category}/${subcategory}/${id}`, { params });
 }
 
 export {
@@ -91,9 +92,7 @@ export {
     updateMyReply,
     getMyCommentList,
     deleteMyComment,
-
     pullAdmin,
     updateAdmin,
-
-    getReadingHistory
+    getReadingHistory,
 };
